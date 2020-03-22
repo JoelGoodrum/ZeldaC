@@ -5,57 +5,35 @@
 #include <stdbool.h>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
+#include <time.h>
 
-typedef struct 
-{
-	int x , y;		
-} Player;
-
-typedef struct 
-{
-	int x , y;
-} Star;
-
-typedef struct 
-{
-	//check if game is running
-	bool running;
-
-	//player struct
-	Player player;
-
-	//stars
-	Star stars[5];
-
-	//images
-	SDL_Texture *star;	
-
-	//renderer
-	SDL_Renderer *rend;
-
-} GameState;
-
+//custom lib
+#include "structs.h"
+extern bool collision(GameState *game, char directrion);
 
 //load function
 void loadGame(GameState *game) {
+
+
+    //player surface
+    SDL_Surface *playerSurface = NULL;
+
+	//load image and create texture
+	playerSurface = IMG_Load("../res/wr0.png");
+	if(playerSurface == NULL) {
+		printf("cannot find img!\n\n");
+		SDL_Quit();
+		exit(1);
+	}
+	
+
+	game->player.wr0 = SDL_CreateTextureFromSurface(game->rend, playerSurface);
+	SDL_FreeSurface(playerSurface);
 
 	//set player variables
 	game->player.x = 220;
 	game->player.y = 140;
 
-	//declare star surface
-    SDL_Surface *starSurface;	
-
-	//load image and create texture
-	starSurface = IMG_Load("../res/star.png");
-	if(starSurface == NULL) {
-		printf("cannot find star.png!\n\n");
-		SDL_Quit();
-		exit(1);
-	}
-
-	game->star = SDL_CreateTextureFromSurface(game->rend, starSurface);
-	SDL_FreeSurface(starSurface);
 
 }
 
@@ -66,27 +44,20 @@ void loadGame(GameState *game) {
 void doRender(GameState *game) {
 
 	//background color
-	SDL_SetRenderDrawColor(game->rend, 0, 0, 255, 255);
+	SDL_SetRenderDrawColor(game->rend, 50, 140, 50, 255);
 
 	//clear the screen
 	SDL_RenderClear(game->rend);
 
-	//set drawing to white
-	SDL_SetRenderDrawColor(game->rend, 255, 255, 255, 255);
 
 	//draw player postion
-	SDL_Rect rect = {game->player.x, game->player.y, 100, 100};
-	SDL_RenderFillRect(game->rend, &rect);
-
-	//draw star img
-	SDL_Rect starRect = { 50, 50, 64, 64};
-	SDL_RenderCopy(game->rend, game->star, NULL, &starRect);
+	SDL_Rect playerRect = {game->player.x, game->player.y, 100, 100};
+	SDL_RenderCopy(game->rend, game->player.wr0, NULL, &playerRect);
+	
 
 	//when done drawing, present drawing
 	SDL_RenderPresent(game->rend);
 
-	//dont burn up the cpu
-	//SDL_Delay(25);
 }
 
 int processEvents(SDL_Window *window, GameState *game){
@@ -106,17 +77,22 @@ int processEvents(SDL_Window *window, GameState *game){
 		}
 	}
 
+
 	const Uint8 *state = SDL_GetKeyboardState(NULL);
-	if(state[SDL_SCANCODE_LEFT]){
+
+	if(state[SDL_SCANCODE_LEFT] & !collision(game , 'L')){
 		game->player.x -= 10;
 	}
-	if(state[SDL_SCANCODE_RIGHT]){
+
+	if(state[SDL_SCANCODE_RIGHT] & !collision(game , 'R')){
 		game->player.x += 10;
 	}
-	if(state[SDL_SCANCODE_UP]){
+
+	if(state[SDL_SCANCODE_UP] & !collision(game , 'U')){
 		game->player.y -= 10;
 	}
-	if(state[SDL_SCANCODE_DOWN]){
+
+	if(state[SDL_SCANCODE_DOWN] & !collision(game , 'D')){
 		game->player.y += 10;
 	}
 
@@ -124,16 +100,26 @@ int processEvents(SDL_Window *window, GameState *game){
 }
 
 
+
 int main(int argc, const char *argv[]){
 
 	//contains all game objects
 	GameState game;
+
+	//set window size
+	game.windowSize.x = 640;
+	game.windowSize.y = 480;
+
+	//set player area
+	game.player.area = 100;
+
 
 	//signal that game is on
 	game.running = true;
 
 	SDL_Window *window; 		//decalre window
 	SDL_Event event;    		//decalre event
+	SDL_Renderer *rend;
 	
 
 	SDL_Init(SDL_INIT_VIDEO);	 //start sdl2
@@ -143,28 +129,36 @@ int main(int argc, const char *argv[]){
 	window = SDL_CreateWindow("game",
 							  SDL_WINDOWPOS_UNDEFINED,
 							  SDL_WINDOWPOS_UNDEFINED,
-							  640,
-							  480,
+							  game.windowSize.x,
+							  game.windowSize.y,
 							  0);
 
 	game.rend = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+		
+
 
 
 	loadGame(&game);
+
+
 
 	printf("game is on\n");
 
 
 	while(game.running == true){
 		
+		//run input and continue or quit the game
 		game.running = processEvents(window, &game);
+		
+		//render the game
 		doRender(&game);
+		
 
 	}
 
 	//close everything and quit
 	printf("terminating game...\n");
-	SDL_DestroyTexture(game.star);
+	SDL_DestroyTexture(game.player.wr0);
 	SDL_DestroyWindow(window);
 	SDL_DestroyRenderer(game.rend);
 	SDL_Quit();

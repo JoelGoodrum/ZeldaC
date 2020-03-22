@@ -1,4 +1,4 @@
 #!/bin/bash
 
-gcc game.c -lSDL2 -lSDL2main -lSDL2_image -o game
+gcc game.c collision.c -lSDL2 -lSDL2main -lSDL2_image -o game
 ./game
