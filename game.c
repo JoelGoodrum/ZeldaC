@@ -47,10 +47,12 @@ int processEvents(SDL_Window *window, Player *player){
 			case SDL_KEYDOWN:
 				switch(event.key.keysym.sym){
 					case SDLK_RIGHT:
-					player->x += 10;
+						player->x += 10;
+						break;
 
 					case SDLK_LEFT:
-					player->x -= 10;
+						player->x -= 10;
+						break;
 				}
 				
 
