@@ -42,3 +42,89 @@ bool collision(GameState *game, char direction) {
 
 	return false;
 }
+
+//code from  https://www.youtube.com/watch?v=yUiZcWHOfW4&list=PLT6WFYYZE6uLMcPGS3qfpYm7T_gViYMMt&index=12
+
+// animate
+void animate(GameState *game, char direction) {
+
+	Player *player = &game->player;
+	int frameFreq = 8;
+
+	if(direction == 'R'){
+
+		player->lastDirection = 'M'; //m for motion
+
+		//every 30 frames
+		if(game->time % frameFreq == 0){
+		
+			if(player->currentText == player->wr[0]){
+				
+				player->currentText = player->wr[1];
+			}
+
+			else {
+				player->currentText = player->wr[0];
+			}
+		}
+		
+	}
+
+	if(direction == 'L'){
+
+		player->lastDirection = 'M'; //m for motion
+
+		//every 30 frames
+		if(game->time % frameFreq == 0){
+		
+			if(player->currentText == player->wl[0]){
+				
+				player->currentText = player->wl[1];
+			}
+
+			else {
+				player->currentText = player->wl[0];
+			}
+		}
+		
+	}
+
+	if(direction == 'U'){
+
+		player->lastDirection = 'M'; //m for motion
+
+		//every 30 frames
+		if(game->time % frameFreq == 0){
+		
+			if(player->currentText == player->wu[0]){
+				
+				player->currentText = player->wu[1];
+			}
+
+			else {
+				player->currentText = player->wu[0];
+			}
+		}
+		
+	}
+
+	if(direction == 'D'){
+
+		player->lastDirection = 'M'; //m for motion
+
+		//every 30 frames
+		if(game->time % frameFreq == 0){
+		
+			if(player->currentText == player->wd[0]){
+				
+				player->currentText = player->wd[1];
+			}
+
+			else {
+				player->currentText = player->wd[0];
+			}
+		}
+		
+	}
+
+}

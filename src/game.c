@@ -10,38 +10,173 @@
 //custom lib
 #include "structs.h"
 extern bool collision(GameState *game, char directrion);
-
-//load function
-void loadGame(GameState *game) {
+extern void animate(GameState *game, char directrion);
 
 
-    //player surface
-    SDL_Surface *playerSurface = NULL;
+//make texture out of images
+void loadTexture(GameState *game ){
 
-	//load image and create texture
-	playerSurface = IMG_Load("../res/wr0.png");
+
+    //load image and create texture//
+    SDL_Surface *playerSurface;
+
+    //#######################################//
+    char *path = "../res/wr0.png";
+
+	playerSurface = IMG_Load(path);
 	if(playerSurface == NULL) {
-		printf("cannot find img!\n\n");
+		printf("cannot find %s: \n", path);
 		SDL_Quit();
 		exit(1);
 	}
 	
-
-	game->player.wr0 = SDL_CreateTextureFromSurface(game->rend, playerSurface);
+	game->player.wr[0] = SDL_CreateTextureFromSurface(game->rend, playerSurface);
 	SDL_FreeSurface(playerSurface);
 
+	//#######################################//
+    path = "../res/wl0.png";
+
+	playerSurface = IMG_Load(path);
+	if(playerSurface == NULL) {
+		printf("cannot find %s: \n", path);
+		SDL_Quit();
+		exit(1);
+	}
+	
+	game->player.wl[0] = SDL_CreateTextureFromSurface(game->rend, playerSurface);
+	SDL_FreeSurface(playerSurface);
+
+	//#######################################//
+    path = "../res/wd0.png";
+
+	playerSurface = IMG_Load(path);
+	if(playerSurface == NULL) {
+		printf("cannot find %s: \n", path);
+		SDL_Quit();
+		exit(1);
+	}
+	
+	game->player.wd[0] = SDL_CreateTextureFromSurface(game->rend, playerSurface);
+	SDL_FreeSurface(playerSurface);
+
+	//#######################################//
+    path = "../res/wu0.png";
+
+	playerSurface = IMG_Load(path);
+	if(playerSurface == NULL) {
+		printf("cannot find %s: \n", path);
+		SDL_Quit();
+		exit(1);
+	}
+	
+	game->player.wu[0] = SDL_CreateTextureFromSurface(game->rend, playerSurface);
+	SDL_FreeSurface(playerSurface);
+
+	//#####################################//
+	//#####################################//
+	//#####################################//
+
+	//#######################################//
+    path = "../res/wr1.png";
+
+	playerSurface = IMG_Load(path);
+	if(playerSurface == NULL) {
+		printf("cannot find %s: \n", path);
+		SDL_Quit();
+		exit(1);
+	}
+	
+	game->player.wr[1] = SDL_CreateTextureFromSurface(game->rend, playerSurface);
+	SDL_FreeSurface(playerSurface);
+
+	//#######################################//
+    path = "../res/wl1.png";
+
+	playerSurface = IMG_Load(path);
+	if(playerSurface == NULL) {
+		printf("cannot find %s: \n", path);
+		SDL_Quit();
+		exit(1);
+	}
+	
+	game->player.wl[1] = SDL_CreateTextureFromSurface(game->rend, playerSurface);
+	SDL_FreeSurface(playerSurface);
+
+	//#######################################//
+    path = "../res/wd1.png";
+
+	playerSurface = IMG_Load(path);
+	if(playerSurface == NULL) {
+		printf("cannot find %s: \n", path);
+		SDL_Quit();
+		exit(1);
+	}
+	
+	game->player.wd[1] = SDL_CreateTextureFromSurface(game->rend, playerSurface);
+	SDL_FreeSurface(playerSurface);
+
+	//#######################################//
+    path = "../res/wu1.png";
+
+	playerSurface = IMG_Load(path);
+	if(playerSurface == NULL) {
+		printf("cannot find %s: \n", path);
+		SDL_Quit();
+		exit(1);
+	}
+	
+	game->player.wu[1] = SDL_CreateTextureFromSurface(game->rend, playerSurface);
+	SDL_FreeSurface(playerSurface);
+
+}
+
+
+//load function
+void loadGame(GameState *game) {
+
+	//set player area
+	game->player.area = 100;
+
+	//start game time
+	game->time = 0;
+
+	//signal that game is on
+	game->running = true;
+
+	//load texture
+	loadTexture(game);
+	
 	//set player variables
 	game->player.x = 220;
 	game->player.y = 140;
-
+	
+	//last position
+	game->player.lastDirection = 'D';
 
 }
 
 
 
 
-
 void doRender(GameState *game) {
+
+	
+
+	//find last position
+	if(game->player.lastDirection == 'U'){
+		game->player.currentText = game->player.wu[0];
+	}
+	if(game->player.lastDirection == 'D'){
+		game->player.currentText = game->player.wd[0];
+	}
+	if(game->player.lastDirection == 'L'){
+		game->player.currentText = game->player.wl[0];
+	}
+	if(game->player.lastDirection == 'R'){
+		game->player.currentText = game->player.wr[0];
+	}
+	
+	
 
 	//background color
 	SDL_SetRenderDrawColor(game->rend, 50, 140, 50, 255);
@@ -52,11 +187,12 @@ void doRender(GameState *game) {
 
 	//draw player postion
 	SDL_Rect playerRect = {game->player.x, game->player.y, 100, 100};
-	SDL_RenderCopy(game->rend, game->player.wr0, NULL, &playerRect);
+	SDL_RenderCopy(game->rend, game->player.currentText, NULL, &playerRect);
 	
 
 	//when done drawing, present drawing
 	SDL_RenderPresent(game->rend);
+
 
 }
 
@@ -65,7 +201,10 @@ int processEvents(SDL_Window *window, GameState *game){
 	SDL_Event event;
 	int notDone = true;
 
+	const Uint8 *state = SDL_GetKeyboardState(NULL);
+
 	while(SDL_PollEvent(&event)){
+
 		switch(event.type){
 			
 			case SDL_QUIT:
@@ -74,28 +213,62 @@ int processEvents(SDL_Window *window, GameState *game){
 				notDone = false;
 				break;
 
+			case SDL_KEYUP:
+				switch(event.key.keysym.sym){
+					case SDLK_RIGHT:
+						game->player.lastDirection = 'R';
+						break;
+					case SDLK_LEFT:
+						game->player.lastDirection = 'L';
+						break;
+					case SDLK_UP:
+						game->player.lastDirection = 'U';
+						break;
+					case SDLK_DOWN:
+						game->player.lastDirection = 'D';
+						break;
+				}
+				break;
+
+
 		}
 	}
 
+	
+	//const Uint8 *state = SDL_GetKeyboardState(NULL);
 
-	const Uint8 *state = SDL_GetKeyboardState(NULL);
+	int playerSpeed = 7; //how fast player moves
 
-	if(state[SDL_SCANCODE_LEFT] & !collision(game , 'L')){
-		game->player.x -= 10;
+
+	if(state[SDL_SCANCODE_LEFT] && !collision(game , 'L')){
+		animate(game, 'L');
+		game->player.x -= playerSpeed;
+		
 	}
 
-	if(state[SDL_SCANCODE_RIGHT] & !collision(game , 'R')){
-		game->player.x += 10;
+	else if(state[SDL_SCANCODE_RIGHT] && !collision(game , 'R')){
+		animate(game, 'R');
+		game->player.x += playerSpeed;
+		
 	}
 
-	if(state[SDL_SCANCODE_UP] & !collision(game , 'U')){
-		game->player.y -= 10;
+	else if(state[SDL_SCANCODE_UP] && !collision(game , 'U')){
+		animate(game, 'U');
+		game->player.y -= playerSpeed;
+		
 	}
 
-	if(state[SDL_SCANCODE_DOWN] & !collision(game , 'D')){
-		game->player.y += 10;
+	else if(state[SDL_SCANCODE_DOWN] && !collision(game , 'D')){
+		animate(game, 'D');
+		game->player.y += playerSpeed;
+		
 	}
 
+	//set character to last directions
+	
+	
+	game->time++;
+	game->time = game->time % 60;
 	return notDone;
 }
 
@@ -109,13 +282,6 @@ int main(int argc, const char *argv[]){
 	//set window size
 	game.windowSize.x = 640;
 	game.windowSize.y = 480;
-
-	//set player area
-	game.player.area = 100;
-
-
-	//signal that game is on
-	game.running = true;
 
 	SDL_Window *window; 		//decalre window
 	SDL_Event event;    		//decalre event
@@ -146,19 +312,36 @@ int main(int argc, const char *argv[]){
 
 
 	while(game.running == true){
-		
+	
+
+
 		//run input and continue or quit the game
 		game.running = processEvents(window, &game);
-		
+
+	
 		//render the game
 		doRender(&game);
+
 		
 
 	}
 
+
 	//close everything and quit
 	printf("terminating game...\n");
-	SDL_DestroyTexture(game.player.wr0);
+	SDL_DestroyTexture(game.player.wr[0]);
+	/*
+	SDL_DestroyTexture(game.player.wu[0]);
+	SDL_DestroyTexture(game.player.wl[0]);
+	SDL_DestroyTexture(game.player.wd[0]);
+
+	SDL_DestroyTexture(game.player.wr[1]);
+	SDL_DestroyTexture(game.player.wu[1]);
+	SDL_DestroyTexture(game.player.wl[1]);
+	SDL_DestroyTexture(game.player.wd[1]);
+	
+	//SDL_DestroyTexture(game.player.currentText);
+	*/
 	SDL_DestroyWindow(window);
 	SDL_DestroyRenderer(game.rend);
 	SDL_Quit();
