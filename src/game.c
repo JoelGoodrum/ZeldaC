@@ -11,7 +11,7 @@
 //custom lib
 #include "structs.h"
 
-extern bool collision(GameState *game, char directrion);
+extern void collision(GameState *game);
 extern void animate(GameState *game, char directrion);
 extern void loadMapTextures(GameState *game);
 extern void loadPlayerTextures(GameState *game);
@@ -37,7 +37,7 @@ void loadGame(GameState *game) {
 	//tree variables
 	game->gameObj.tree.x = 150;  //tree x position
 	game->gameObj.tree.y = 150;  //tree y position
-	game->gameObj.tree.area = 100;     //tree area
+	game->gameObj.tree.area = 250;     //tree area
 
 	// ## load textures and fonts ## 
 
@@ -113,23 +113,23 @@ int processEvents(SDL_Window *window, GameState *game){
 
 	int playerSpeed = 7; //how fast player moves
 
-	if(state[SDL_SCANCODE_LEFT] && !collision(game , 'L')){
+	if(state[SDL_SCANCODE_LEFT]){
 		animate(game, 'L');
 		game->player.x -= playerSpeed;
 	}
 
-	else if(state[SDL_SCANCODE_RIGHT] && !collision(game , 'R')){
+	else if(state[SDL_SCANCODE_RIGHT]){
 		animate(game, 'R');
 		game->player.x += playerSpeed;
 	}
 
-	else if(state[SDL_SCANCODE_UP] && !collision(game , 'U')){
+	else if(state[SDL_SCANCODE_UP]){
 		animate(game, 'U');
 		game->player.y -= playerSpeed;
 		
 	}
 
-	else if(state[SDL_SCANCODE_DOWN] && !collision(game , 'D')){
+	else if(state[SDL_SCANCODE_DOWN]){
 		animate(game, 'D');
 		game->player.y += playerSpeed;
 	}
@@ -204,6 +204,9 @@ int main(int argc, const char *argv[]){
 
 		//run input and continue or quit the game
 		game.running = processEvents(window, &game);
+
+		//process output
+		collision(&game);
 
 		//render the game
 		doRender(&game);

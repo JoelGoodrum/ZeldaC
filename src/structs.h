@@ -92,7 +92,7 @@ typedef struct
 
 } GameState;
 
-bool collision(GameState *game, char direction);
+void collision(GameState *game);
 void animate(GameState *game, char direction);
 void loadPlayerTextures(GameState *game);
 void loadFonts(GameState *game);
