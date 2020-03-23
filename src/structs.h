@@ -13,9 +13,7 @@ typedef struct
 
 	//area
 	int area;		
-
-	//last direction player was facing
-	char lastDirection;
+	
 
 	//animation frames
 

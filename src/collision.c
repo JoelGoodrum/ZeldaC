@@ -49,11 +49,9 @@ bool collision(GameState *game, char direction) {
 void animate(GameState *game, char direction) {
 
 	Player *player = &game->player;
-	int frameFreq = 8;
+	int frameFreq = 6;
 
 	if(direction == 'R'){
-
-		player->lastDirection = 'M'; //m for motion
 
 		//every 30 frames
 		if(game->time % frameFreq == 0){
@@ -72,8 +70,6 @@ void animate(GameState *game, char direction) {
 
 	if(direction == 'L'){
 
-		player->lastDirection = 'M'; //m for motion
-
 		//every 30 frames
 		if(game->time % frameFreq == 0){
 		
@@ -91,8 +87,6 @@ void animate(GameState *game, char direction) {
 
 	if(direction == 'U'){
 
-		player->lastDirection = 'M'; //m for motion
-
 		//every 30 frames
 		if(game->time % frameFreq == 0){
 		
@@ -109,8 +103,6 @@ void animate(GameState *game, char direction) {
 	}
 
 	if(direction == 'D'){
-
-		player->lastDirection = 'M'; //m for motion
 
 		//every 30 frames
 		if(game->time % frameFreq == 0){
