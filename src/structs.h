@@ -62,3 +62,4 @@ typedef struct
 
 bool collision(GameState *game, char direction);
 void animate(GameState *game, char direction);
+void loadPlayerTextures(GameState *game);
