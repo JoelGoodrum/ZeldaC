@@ -142,11 +142,13 @@ void loadFonts(GameState *game){
 //https://www.youtube.com/watch?v=JbtiCeKl1uo&list=PLT6WFYYZE6uLMcPGS3qfpYm7T_gViYMMt&index=14
 void drawHUD(GameState *game){
 
-
+	//make health string
+	char healthStr[50] = "";
+	sprintf(healthStr, "health: %d", game->player.health);
 
 	//draw health
-	SDL_Color red = { 200, 0, 0, 255};
-	SDL_Surface *tmp = TTF_RenderText_Blended(game->hud.font, "health: 100", red);
+	SDL_Color red = { 180, 0, 0, 255};
+	SDL_Surface *tmp = TTF_RenderText_Blended(game->hud.font, healthStr, red);
 	game->hud.label = SDL_CreateTextureFromSurface(game->rend, tmp);
 	
 	SDL_Rect textRect = { 20, 15, tmp->w, tmp->h};

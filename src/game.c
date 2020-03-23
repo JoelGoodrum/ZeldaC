@@ -39,8 +39,8 @@ void loadGame(GameState *game) {
 	game->player.currentText = game->player.wd[0];
 	
 	//set player variables
-	game->player.x = 220;
-	game->player.y = 140;
+	game->player.x = (game->windowSize.x / 2) - (game->player.area / 2); //start in the middle of x axis
+	game->player.y = (game->windowSize.y / 2) - (game->player.area / 2); //start in the middle of y axis
 	game->player.health = 100;
 
 }
