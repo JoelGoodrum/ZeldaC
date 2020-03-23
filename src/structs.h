@@ -5,7 +5,9 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <time.h>
+#include <SDL2/SDL_ttf.h>
 
+//player obj
 typedef struct 
 {
 	// position
@@ -13,7 +15,9 @@ typedef struct
 
 	//area
 	int area;		
-	
+
+	//health
+	int health;
 
 	//animation frames
 
@@ -31,11 +35,22 @@ typedef struct
 
 } Player;
 
+//window obj
 typedef struct 
 {
 	int x , y;
 } WindowSize;
 
+//heads up display obj
+typedef struct {
+	//rendererd string
+	SDL_Texture *label;
+
+	//fonts
+	TTF_Font *font;
+} HUD;
+
+	
 
 typedef struct 
 {
@@ -55,9 +70,13 @@ typedef struct
 	// keep track of time to organize frames
 	int time;
 
+	HUD hud;
+
 
 } GameState;
 
 bool collision(GameState *game, char direction);
 void animate(GameState *game, char direction);
 void loadPlayerTextures(GameState *game);
+void loadFonts(GameState *game);
+void drawHUD(GameState *game);

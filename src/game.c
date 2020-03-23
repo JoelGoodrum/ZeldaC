@@ -5,14 +5,17 @@
 #include <stdbool.h>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
+#include <SDL2/SDL_ttf.h>
 #include <time.h>
 
 //custom lib
 #include "structs.h"
+
 extern bool collision(GameState *game, char directrion);
 extern void animate(GameState *game, char directrion);
 extern void loadPlayerTextures(GameState *game);
-
+extern void loadFonts(GameState *game);
+extern void drawHUD(GameState *game);
 
 //load function
 void loadGame(GameState *game) {
@@ -29,28 +32,37 @@ void loadGame(GameState *game) {
 	//load texture
 	loadPlayerTextures(game);
 
+	//load fonts
+	loadFonts(game);
+
 	//first frame
 	game->player.currentText = game->player.wd[0];
 	
 	//set player variables
 	game->player.x = 220;
 	game->player.y = 140;
+	game->player.health = 100;
 
 }
 
 //render game condition on screen
 void doRender(GameState *game) {	
 
+	//clear the screen
+	SDL_RenderClear(game->rend);
+
 	//background color
 	SDL_SetRenderDrawColor(game->rend, 50, 140, 50, 255);
 
-	//clear the screen
-	SDL_RenderClear(game->rend);
 
 	//draw player postion
 	SDL_Rect playerRect = {game->player.x, game->player.y, 100, 100};
 	SDL_RenderCopy(game->rend, game->player.currentText, NULL, &playerRect);
 	
+
+	//draw HUD
+	drawHUD(game);
+
 	//when done drawing, present drawing
 	SDL_RenderPresent(game->rend);
 
@@ -73,6 +85,7 @@ int processEvents(SDL_Window *window, GameState *game){
 				window = NULL;
 				notDone = false;
 				break;
+
 
 			//set standing still frame
 			case SDL_KEYUP:
@@ -141,8 +154,15 @@ int terminateGame(GameState *game, SDL_Window *window){
 	
 	SDL_DestroyTexture(game->player.currentText);
 	
+	//destroy font
+	if(game->hud.label != NULL){
+		SDL_DestroyTexture(game->hud.label);
+		TTF_CloseFont(game->hud.font);
+	}
+
 	SDL_DestroyWindow(window);
 	SDL_DestroyRenderer(game->rend);
+	TTF_Quit();
 	SDL_Quit();
 	return 0;
 }
@@ -161,6 +181,7 @@ int main(int argc, const char *argv[]){
 	SDL_Event event;    		//decalre event
 	
 	SDL_Init(SDL_INIT_VIDEO);	 //start sdl2
+	TTF_Init(); 				 //initialize fonts
 
 	//start window
 	window = SDL_CreateWindow("game",

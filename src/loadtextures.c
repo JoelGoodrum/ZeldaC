@@ -1,9 +1,10 @@
 #include <stdio.h>
+#include <string.h>
 #include <stdbool.h>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <time.h>
-
+#include <SDL2/SDL_ttf.h>
 //custom lib
 #include "structs.h"
 
@@ -123,4 +124,36 @@ void loadPlayerTextures(GameState *game ){
 	game->player.wu[1] = SDL_CreateTextureFromSurface(game->rend, playerSurface);
 	SDL_FreeSurface(playerSurface);
 
+	//#### font texture ##########//
+	game->hud.label = NULL;
+
+}
+
+//code from https://www.youtube.com/watch?v=8Z796HGwYLE&list=PLT6WFYYZE6uLMcPGS3qfpYm7T_gViYMMt&index=13
+void loadFonts(GameState *game){
+	game->hud.font = TTF_OpenFont("../res/Peepo.ttf", 28);
+	if(!game->hud.font){
+		printf("font not found!\n");
+		SDL_Quit();
+		exit(1);
+	}
+}
+
+//https://www.youtube.com/watch?v=JbtiCeKl1uo&list=PLT6WFYYZE6uLMcPGS3qfpYm7T_gViYMMt&index=14
+void drawHUD(GameState *game){
+
+
+
+	//draw health
+	SDL_Color red = { 200, 0, 0, 255};
+	SDL_Surface *tmp = TTF_RenderText_Blended(game->hud.font, "health: 100", red);
+	game->hud.label = SDL_CreateTextureFromSurface(game->rend, tmp);
+	
+	SDL_Rect textRect = { 20, 15, tmp->w, tmp->h};
+	SDL_RenderCopy(game->rend, game->hud.label, NULL, &textRect);
+
+
+	//terminate hud
+	SDL_FreeSurface(tmp);
+	
 }
