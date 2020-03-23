@@ -164,14 +164,22 @@ void loadFonts(GameState *game){
 
 //draw player
 void drawPlayer(GameState *game){
+
+	int scrollX = game->scrollX;
+	int scrollY = game->scrollY;
+
 	//draw player postion
-	SDL_Rect playerRect = {game->player.x, game->player.y, 100, 100};
+	SDL_Rect playerRect = {scrollX + game->player.x, scrollY + game->player.y, 100, 100};
 	SDL_RenderCopy(game->rend, game->player.currentText, NULL, &playerRect);
 }
 
 
 //draw map
 void drawMap(GameState *game){
+
+	int scrollX = game->scrollX;
+	int scrollY = game->scrollY;
+	
 	//background color
 	SDL_SetRenderDrawColor(game->rend, 50, 140, 50, 255);
 
@@ -180,7 +188,7 @@ void drawMap(GameState *game){
     
 
 	//draw tree
-	SDL_Rect treeRect = {tree->x, tree->y, tree->area, tree->area};
+	SDL_Rect treeRect = {scrollX + tree->x, scrollY + tree->y, tree->area, tree->area};
 	SDL_RenderCopy(game->rend, tree->texture, NULL, &treeRect);
 }
 

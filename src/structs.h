@@ -89,6 +89,9 @@ typedef struct
 	//hud
 	HUD hud;
 
+	//mv camera
+	int scrollX, scrollY;
+
 
 } GameState;
 

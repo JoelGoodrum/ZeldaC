@@ -40,13 +40,15 @@ void loadGame(GameState *game) {
 	game->gameObj.tree.area = 250;     //tree area
 
 	// ## load textures and fonts ## 
-
 	loadPlayerTextures(game); //load player texture
 	loadMapTextures(game);    //load map textures
 	loadFonts(game);		  //load fonts
 
 	//set first frame
 	game->player.currentText = game->player.wd[0];
+
+	//set scroll var
+	game->scrollX = 0;
 	
 }
 
@@ -136,6 +138,10 @@ int processEvents(SDL_Window *window, GameState *game){
 	
 	game->time++;
 	game->time = game->time % 60;
+
+	game->scrollX = -game->player.x + (game->windowSize.x / 2) - (game->player.area / 2);
+	game->scrollY = -game->player.y + (game->windowSize.y / 2) - (game->player.area / 2);
+
 	return notDone;
 }
 
