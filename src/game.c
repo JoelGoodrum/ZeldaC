@@ -13,36 +13,41 @@
 
 extern bool collision(GameState *game, char directrion);
 extern void animate(GameState *game, char directrion);
+extern void loadMapTextures(GameState *game);
 extern void loadPlayerTextures(GameState *game);
 extern void loadFonts(GameState *game);
+extern void drawMap(GameState *game);
 extern void drawHUD(GameState *game);
+extern void drawPlayer(GameState *game);
+
 
 //load function
 void loadGame(GameState *game) {
 
-	//set player area
-	game->player.area = 100;
-
-	//start game time
-	game->time = 0;
-
-	//signal that game is on
-	game->running = true;
-
-	//load texture
-	loadPlayerTextures(game);
-
-	//load fonts
-	loadFonts(game);
-
-	//first frame
-	game->player.currentText = game->player.wd[0];
-	
-	//set player variables
+	//player variables
+	game->player.area = 100;  //set player area
+	game->time = 0; 		  //start game time
+	game->running = true;     //signal that game is on
 	game->player.x = (game->windowSize.x / 2) - (game->player.area / 2); //start in the middle of x axis
 	game->player.y = (game->windowSize.y / 2) - (game->player.area / 2); //start in the middle of y axis
 	game->player.health = 100;
 
+	// ## map variables ## 
+
+	//tree variables
+	game->gameObj.tree.x = 150;  //tree x position
+	game->gameObj.tree.y = 150;  //tree y position
+	game->gameObj.tree.area = 100;     //tree area
+
+	// ## load textures and fonts ## 
+
+	loadPlayerTextures(game); //load player texture
+	loadMapTextures(game);    //load map textures
+	loadFonts(game);		  //load fonts
+
+	//set first frame
+	game->player.currentText = game->player.wd[0];
+	
 }
 
 //render game condition on screen
@@ -51,15 +56,12 @@ void doRender(GameState *game) {
 	//clear the screen
 	SDL_RenderClear(game->rend);
 
-	//background color
-	SDL_SetRenderDrawColor(game->rend, 50, 140, 50, 255);
+	//draw map
+	drawMap(game);
 
-
-	//draw player postion
-	SDL_Rect playerRect = {game->player.x, game->player.y, 100, 100};
-	SDL_RenderCopy(game->rend, game->player.currentText, NULL, &playerRect);
+	//draw player
+	drawPlayer(game);
 	
-
 	//draw HUD
 	drawHUD(game);
 

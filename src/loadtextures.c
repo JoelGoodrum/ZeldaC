@@ -12,7 +12,6 @@
 //make texture out of images
 void loadPlayerTextures(GameState *game ){
 
-
     //load image and create texture//
     SDL_Surface *playerSurface;
 
@@ -129,6 +128,27 @@ void loadPlayerTextures(GameState *game ){
 
 }
 
+//load map textures
+void loadMapTextures(GameState *game){
+
+	//load tree texture
+	Tree *tree = &game->gameObj.tree;
+    SDL_Surface *treeSurface;
+
+    char *path = "../res/tree.png";
+
+	treeSurface = IMG_Load(path);
+	if(treeSurface == NULL) {
+		printf("cannot find %s: \n", path);
+		SDL_Quit();
+		exit(1);
+	}
+
+	tree->texture = SDL_CreateTextureFromSurface(game->rend, treeSurface);
+	SDL_FreeSurface(treeSurface);
+	// tree texture loaded
+}
+
 //code from https://www.youtube.com/watch?v=8Z796HGwYLE&list=PLT6WFYYZE6uLMcPGS3qfpYm7T_gViYMMt&index=13
 void loadFonts(GameState *game){
 	game->hud.font = TTF_OpenFont("../res/Peepo.ttf", 28);
@@ -139,7 +159,33 @@ void loadFonts(GameState *game){
 	}
 }
 
-//https://www.youtube.com/watch?v=JbtiCeKl1uo&list=PLT6WFYYZE6uLMcPGS3qfpYm7T_gViYMMt&index=14
+//code from https://www.youtube.com/watch?v=JbtiCeKl1uo&list=PLT6WFYYZE6uLMcPGS3qfpYm7T_gViYMMt&index=14
+
+
+//draw player
+void drawPlayer(GameState *game){
+	//draw player postion
+	SDL_Rect playerRect = {game->player.x, game->player.y, 100, 100};
+	SDL_RenderCopy(game->rend, game->player.currentText, NULL, &playerRect);
+}
+
+
+//draw map
+void drawMap(GameState *game){
+	//background color
+	SDL_SetRenderDrawColor(game->rend, 50, 140, 50, 255);
+
+	//port tree obj
+	Tree *tree = &game->gameObj.tree;
+    
+
+	//draw tree
+	SDL_Rect treeRect = {tree->x, tree->y, tree->area, tree->area};
+	SDL_RenderCopy(game->rend, tree->texture, NULL, &treeRect);
+}
+
+
+//draw hud
 void drawHUD(GameState *game){
 
 	//make health string
@@ -159,3 +205,4 @@ void drawHUD(GameState *game){
 	SDL_FreeSurface(tmp);
 	
 }
+

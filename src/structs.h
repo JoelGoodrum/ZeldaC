@@ -30,10 +30,23 @@ typedef struct
 	
 	//current texture of character
 	SDL_Texture *currentText;
-	
-	
 
 } Player;
+
+//in game objects
+typedef struct 
+{
+	int x , y; //position
+	int area;
+	SDL_Texture *texture;
+} Tree;
+
+
+//in game objects
+typedef struct 
+{
+	Tree tree;
+} GameObj;
 
 //window obj
 typedef struct 
@@ -61,15 +74,19 @@ typedef struct
 	//check if game is running
 	bool running;
 
-	//player struct
-	Player player;
-
 	//renderer
 	SDL_Renderer *rend;
 
 	// keep track of time to organize frames
 	int time;
 
+	//game objects
+	GameObj gameObj;
+
+	//player struct
+	Player player;
+
+	//hud
 	HUD hud;
 
 
@@ -79,4 +96,6 @@ bool collision(GameState *game, char direction);
 void animate(GameState *game, char direction);
 void loadPlayerTextures(GameState *game);
 void loadFonts(GameState *game);
+void drawMap(GameState *game);
+void drawPlayer(GameState *game);
 void drawHUD(GameState *game);
