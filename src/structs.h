@@ -107,6 +107,7 @@ typedef struct
 } GameState;
 
 void collision(GameState *game, GameObj *obj, int arrSize);
+void enemyCollision(GameState *game, Enemy *obj, int arrSize);
 void animate(GameState *game, char direction);
 void loadPlayerTextures(GameState *game);
 void loadSkeletonTextures(GameState *game);

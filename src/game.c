@@ -12,6 +12,7 @@
 #include "structs.h"
 
 extern void collision(GameState *game, GameObj *obj, int arrSize);
+extern void enemyCollision(GameState *game, Enemy *obj, int arrSize);
 extern void animate(GameState *game, char directrion);
 extern void loadMapTextures(GameState *game);
 extern void loadPlayerTextures(GameState *game);
@@ -51,6 +52,7 @@ void loadGame(GameState *game) {
 	game->skeleton[0].x = 150;
 	game->skeleton[0].y = -250;
 	game->skeleton[0].area = 100;
+	game->skeleton[0].attack = 10;
 
 	// ## load textures and fonts ## 
 	loadPlayerTextures(game); 
@@ -228,6 +230,9 @@ int main(int argc, const char *argv[]){
 
 		//process tree collision
 		collision(&game, game.tree, game.numbOfTrees);
+
+		//process enemy collision
+		enemyCollision(&game, game.skeleton, game.numbOfSkel);
 
 		//render the game
 		doRender(&game);

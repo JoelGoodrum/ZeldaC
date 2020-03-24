@@ -91,6 +91,90 @@ void collision(GameState *game, GameObj *obj, int arrSize) {
 	
 }
 
+void enemyCollision(GameState *game, Enemy *obj, int arrSize) {
+
+	WindowSize *win = &game->windowSize;
+
+	Player *player= &game->player;
+	float playerY = (float)player->y;
+	float playerX = (float)player->x;
+	float playerA = (float)player->area;
+	float enemyPush = 100;
+
+	//loop all objects to see if there is collision
+	for(int i = 0; i < arrSize; i++){
+
+		
+		float objY = (float)obj[i].y;
+		float objX = (float)obj[i].x;
+		float objA = (float)obj[i].area;
+		
+
+		//if obj and player are on the same y axis
+		if(playerY + playerA > objY && playerY < (objY + objA)){
+
+			
+			//rubbing againts right edge
+			if(playerX < (objX + objA) && (playerX + playerA) > (objX + objA)){
+				
+				//correct playerX
+				game->player.x = (int)(objX + objA + enemyPush);
+				playerX = objX + objA + enemyPush;
+				game->player.health = game->player.health - obj[i].attack;
+			}
+			
+
+			//rubbing againts left edge
+			else if(playerX + playerA > objX && playerX < objX){
+				
+				//correct playerX
+				game->player.x = (int)(objX - playerA - enemyPush);
+				playerX = objX - objA - enemyPush;
+				game->player.health = game->player.health - obj[i].attack;
+			}
+
+			
+		}
+		
+
+		
+		//if obj and player are on the same x axis
+		if ( (playerX + (playerA/2)) > objX && playerX + (playerA/2) < (objX + objA)) {
+
+			//if bumping head
+			if(playerY < (objY + objA) && player->y > objY){
+				
+				//correct y
+				game->player.y = (int)(objY + objA + enemyPush);
+				playerY = objY + objA + enemyPush;
+				game->player.health = game->player.health - obj[i].attack;
+
+			}
+			
+			//if bumping feet
+			else if(playerY + playerA > objY && playerY < objY){
+
+				//correct y
+				game->player.y = (int)(objY - playerA);
+				playerY = objY - playerA - enemyPush;
+				game->player.health = game->player.health - obj[i].attack;
+
+			}
+		}
+
+
+	}
+
+
+	
+	
+
+			
+	
+
+	
+}
+
 //code from  https://www.youtube.com/watch?v=yUiZcWHOfW4&list=PLT6WFYYZE6uLMcPGS3qfpYm7T_gViYMMt&index=12
 
 // animate
