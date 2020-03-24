@@ -22,6 +22,7 @@ extern void drawMap(GameState *game);
 extern void drawEnemies(GameState *game);
 extern void drawHUD(GameState *game);
 extern void drawPlayer(GameState *game);
+extern void drawGameOver(GameState *game);
 
 
 //load function
@@ -157,6 +158,21 @@ int processEvents(SDL_Window *window, GameState *game){
 	return notDone;
 }
 
+//player is dead 
+void ifGameOver(GameState *game){
+	
+	if(game->player.health < 1){
+		SDL_Delay(500);
+		drawGameOver(game);
+		SDL_Delay(2000);
+		SDL_RenderClear(game->rend);
+		//start from begenning
+		loadGame(game);
+	}
+
+	
+}
+
 //close everything and quit
 int terminateGame(GameState *game, SDL_Window *window){
 	
@@ -236,6 +252,11 @@ int main(int argc, const char *argv[]){
 
 		//render the game
 		doRender(&game);
+		
+		//check if player died
+		ifGameOver(&game);
+
+		
 
 	}
 

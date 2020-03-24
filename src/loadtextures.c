@@ -20,7 +20,7 @@ void loadPlayerTextures(GameState *game ){
 
 	playerSurface = IMG_Load(path);
 	if(playerSurface == NULL) {
-		printf("cannot find %s: \n", path);
+		printf("cannot find: %s\n", path);
 		SDL_Quit();
 		exit(1);
 	}
@@ -171,6 +171,7 @@ void loadMapTextures(GameState *game){
 //code from https://www.youtube.com/watch?v=8Z796HGwYLE&list=PLT6WFYYZE6uLMcPGS3qfpYm7T_gViYMMt&index=13
 void loadFonts(GameState *game){
 	game->hud.font = TTF_OpenFont("../res/Peepo.ttf", 28);
+	game->gameOverFont = TTF_OpenFont("../res/Peepo.ttf", 68);
 	if(!game->hud.font){
 		printf("font not found!\n");
 		SDL_Quit();
@@ -247,3 +248,29 @@ void drawHUD(GameState *game){
 	
 }
 
+void drawGameOver(GameState *game){
+
+	//draw black background
+	SDL_SetRenderDrawColor(game->rend, 10, 10, 10, 255);
+
+	//clear screen
+	SDL_RenderClear(game->rend);
+	
+
+
+	//draw is dead
+	SDL_Color white = { 240, 240, 240, 255};
+
+	SDL_Surface *tmp = TTF_RenderText_Blended(game->gameOverFont, "GAME OVER", white);
+	game->hud.label = SDL_CreateTextureFromSurface(game->rend, tmp);
+	
+	SDL_Rect textRect = { (game->windowSize.x - tmp->w) / 2,  (game->windowSize.y - tmp->h) / 2, tmp->w, tmp->h};
+	SDL_RenderCopy(game->rend, game->hud.label, NULL, &textRect);
+
+	//terminate hud
+	SDL_FreeSurface(tmp);
+	
+	SDL_RenderPresent(game->rend); //when done drawing, present drawing
+
+
+}

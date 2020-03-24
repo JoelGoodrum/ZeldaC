@@ -99,7 +99,7 @@ void enemyCollision(GameState *game, Enemy *obj, int arrSize) {
 	float playerY = (float)player->y;
 	float playerX = (float)player->x;
 	float playerA = (float)player->area;
-	float enemyPush = 100;
+	float enemyPush = 50;
 
 	//loop all objects to see if there is collision
 	for(int i = 0; i < arrSize; i++){

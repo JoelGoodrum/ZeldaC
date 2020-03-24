@@ -73,6 +73,7 @@ typedef struct
 
 	//fonts
 	TTF_Font *font;
+
 } HUD;
 
 	
@@ -91,6 +92,7 @@ typedef struct
 	int numbOfSkel;        		// player obj
 	Enemy skeleton[1];					// enemy obj
 	EnemyTextures enemyTextures; 	// enemy texture
+	TTF_Font *gameOverFont;
 
 
 	// ## MAP ## //
@@ -116,3 +118,4 @@ void drawMap(GameState *game);
 void drawPlayer(GameState *game);
 void drawEnemies(GameState *game);
 void drawHUD(GameState *game);
+void drawGameOver(GameState *game);
