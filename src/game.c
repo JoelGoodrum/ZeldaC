@@ -15,8 +15,10 @@ extern void collision(GameState *game, GameObj *obj, int arrSize);
 extern void animate(GameState *game, char directrion);
 extern void loadMapTextures(GameState *game);
 extern void loadPlayerTextures(GameState *game);
+extern void loadSkeletonTextures(GameState *game);
 extern void loadFonts(GameState *game);
 extern void drawMap(GameState *game);
+extern void drawEnemies(GameState *game);
 extern void drawHUD(GameState *game);
 extern void drawPlayer(GameState *game);
 
@@ -44,10 +46,17 @@ void loadGame(GameState *game) {
 	game->tree[1].y = 150;  //tree y position
 	game->tree[1].area = 250;     //tree area
 
+	//skeleton variables
+	game->numbOfSkel = 1;
+	game->skeleton[0].x = 150;
+	game->skeleton[0].y = -250;
+	game->skeleton[0].area = 100;
+
 	// ## load textures and fonts ## 
-	loadPlayerTextures(game); //load player texture
-	loadMapTextures(game);    //load map textures
-	loadFonts(game);		  //load fonts
+	loadPlayerTextures(game); 
+	loadSkeletonTextures(game); 
+	loadMapTextures(game);    
+	loadFonts(game);		  
 
 	//set first frame
 	game->player.currentText = game->player.wd[0];
@@ -60,21 +69,16 @@ void loadGame(GameState *game) {
 
 //render game condition on screen
 void doRender(GameState *game) {	
-
-	//clear the screen
-	SDL_RenderClear(game->rend);
-
-	//draw map
-	drawMap(game);
-
-	//draw player
-	drawPlayer(game);
 	
-	//draw HUD
+	SDL_RenderClear(game->rend); 	//clear the screen
+
+	//draw functions
+	drawMap(game);
+	drawEnemies(game);
+	drawPlayer(game);
 	drawHUD(game);
 
-	//when done drawing, present drawing
-	SDL_RenderPresent(game->rend);
+	SDL_RenderPresent(game->rend); //when done drawing, present drawing
 
 }
 

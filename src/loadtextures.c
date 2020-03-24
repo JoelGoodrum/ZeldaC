@@ -128,6 +128,26 @@ void loadPlayerTextures(GameState *game ){
 
 }
 
+//load enemy textures
+void loadSkeletonTextures(GameState *game){
+
+	//load skeleton texture
+    SDL_Surface *skelSurface;
+
+    char *path = "../res/skeleton/wd0.png";
+
+	skelSurface = IMG_Load(path);
+	if(skelSurface == NULL) {
+		printf("cannot find %s: \n", path);
+		SDL_Quit();
+		exit(1);
+	}
+
+	game->enemyTextures.skeleton = SDL_CreateTextureFromSurface(game->rend, skelSurface);
+	SDL_FreeSurface(skelSurface);
+	// skeleton texture loaded
+}
+
 //load map textures
 void loadMapTextures(GameState *game){
 
@@ -161,17 +181,6 @@ void loadFonts(GameState *game){
 //code from https://www.youtube.com/watch?v=JbtiCeKl1uo&list=PLT6WFYYZE6uLMcPGS3qfpYm7T_gViYMMt&index=14
 
 
-//draw player
-void drawPlayer(GameState *game){
-
-	int scrollX = game->scrollX;
-	int scrollY = game->scrollY;
-
-	//draw player postion
-	SDL_Rect playerRect = {scrollX + game->player.x, scrollY + game->player.y, 100, 100};
-	SDL_RenderCopy(game->rend, game->player.currentText, NULL, &playerRect);
-}
-
 
 //draw map
 void drawMap(GameState *game){
@@ -193,6 +202,29 @@ void drawMap(GameState *game){
 	
 }
 
+//draw player
+void drawPlayer(GameState *game){
+
+	int scrollX = game->scrollX;
+	int scrollY = game->scrollY;
+
+	//draw player at current postion
+	SDL_Rect playerRect = {scrollX + game->player.x, scrollY + game->player.y, 100, 100};
+	SDL_RenderCopy(game->rend, game->player.currentText, NULL, &playerRect);
+}
+
+void drawEnemies(GameState *game){
+
+	int scrollX = game->scrollX;
+	int scrollY = game->scrollY;
+
+	//draw skeleton at current postion
+	for(int i = 0; i < game->numbOfSkel; i++){
+		SDL_Rect skelRect = {scrollX + game->skeleton[i].x, scrollY + game->skeleton[i].y, 100, 100};
+		SDL_RenderCopy(game->rend, game->enemyTextures.skeleton, NULL, &skelRect);
+	}
+
+}
 
 //draw hud
 void drawHUD(GameState *game){

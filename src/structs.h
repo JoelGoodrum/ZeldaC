@@ -10,14 +10,9 @@
 //player obj
 typedef struct 
 {
-	// position
-	int x , y;
-
-	//area
-	int area;		
-
-	//health
-	int health;
+	int x , y;  // player position
+	int area;	// player area	
+	int health; // player health
 
 	//animation frames
 
@@ -28,23 +23,40 @@ typedef struct
 	SDL_Texture *wu[2];
 	SDL_Texture *wd[2];
 	
-	//current texture of character
-	SDL_Texture *currentText;
+	SDL_Texture *currentText; //current texture of character
 
 } Player;
 
+//enemy textures
+typedef struct 
+{
+	SDL_Texture *skeleton;
+} EnemyTextures;
+
+//enemies obj
+typedef struct 
+{
+	int x , y;
+	int area;
+	int health;
+	int attack; //attack is how much health they take from player	
+} Enemy;
+
+
+//map textures
 typedef struct 
 {
 	SDL_Texture *tree;
 } MapTextures;
+
 
 //in game objects
 typedef struct 
 {
 	int x , y; //position
 	int area;
-	
 } GameObj;
+
 
 //window obj
 typedef struct 
@@ -54,7 +66,8 @@ typedef struct
 
 
 //heads up display obj
-typedef struct {
+typedef struct 
+{
 	//rendererd string
 	SDL_Texture *label;
 
@@ -66,34 +79,29 @@ typedef struct {
 //game state struct
 typedef struct 
 {
+	// ## GAME ## //
 
-	//game window size
-	WindowSize windowSize;
+	WindowSize windowSize;  		// game window size
+	HUD hud;  						// head ups display data
+	SDL_Renderer *rend;     		// renderer
+	bool running; 					// check if game is running
+	int time; 						// keep track of time to organize frames
+	int scrollX, scrollY;   		// mv camera
+	Player player;  
+	int numbOfSkel;        		// player obj
+	Enemy skeleton[1];					// enemy obj
+	EnemyTextures enemyTextures; 	// enemy texture
 
-	//check if game is running
-	bool running;
 
-	// keep track of time to organize frames
-	int time;
+	// ## MAP ## //
 
-	//game objects
-	int numbOfTrees; //needs to be set to two in load game function
-	GameObj tree[2];
+	int numbOfTrees; 			// needs to be set to two in load game function
+	GameObj tree[2]; 			// tree objects, two are currently set
+	MapTextures mapTextures; 	//map textures
 
-	//player struct
-	Player player;
 
-	//hud
-	HUD hud;
 
-	//mv camera
-	int scrollX, scrollY;
-
-	//renderer
-	SDL_Renderer *rend;
-
-	//map textures
-	MapTextures mapTextures;
+	
 
 
 } GameState;
@@ -101,7 +109,9 @@ typedef struct
 void collision(GameState *game, GameObj *obj, int arrSize);
 void animate(GameState *game, char direction);
 void loadPlayerTextures(GameState *game);
+void loadSkeletonTextures(GameState *game);
 void loadFonts(GameState *game);
 void drawMap(GameState *game);
 void drawPlayer(GameState *game);
+void drawEnemies(GameState *game);
 void drawHUD(GameState *game);
