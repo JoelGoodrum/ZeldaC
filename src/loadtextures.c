@@ -132,7 +132,6 @@ void loadPlayerTextures(GameState *game ){
 void loadMapTextures(GameState *game){
 
 	//load tree texture
-	Tree *tree = &game->gameObj.tree;
     SDL_Surface *treeSurface;
 
     char *path = "../res/tree.png";
@@ -144,7 +143,7 @@ void loadMapTextures(GameState *game){
 		exit(1);
 	}
 
-	tree->texture = SDL_CreateTextureFromSurface(game->rend, treeSurface);
+	game->mapTextures.tree = SDL_CreateTextureFromSurface(game->rend, treeSurface);
 	SDL_FreeSurface(treeSurface);
 	// tree texture loaded
 }
@@ -183,13 +182,15 @@ void drawMap(GameState *game){
 	//background color
 	SDL_SetRenderDrawColor(game->rend, 50, 140, 50, 255);
 
+	//draw trees
+	
+	for(int i = 0; i < game->numbOfTrees; i++){
+		SDL_Rect treeRect = {scrollX + game->tree[i].x, scrollY + game->tree[i].y, game->tree[i].area, game->tree[i].area};
+		SDL_RenderCopy(game->rend, game->mapTextures.tree, NULL, &treeRect);
+	}
 	//port tree obj
-	Tree *tree = &game->gameObj.tree;
-    
-
-	//draw tree
-	SDL_Rect treeRect = {scrollX + tree->x, scrollY + tree->y, tree->area, tree->area};
-	SDL_RenderCopy(game->rend, tree->texture, NULL, &treeRect);
+	
+	
 }
 
 

@@ -11,7 +11,7 @@
 //custom lib
 #include "structs.h"
 
-extern void collision(GameState *game);
+extern void collision(GameState *game, GameObj *obj, int arrSize);
 extern void animate(GameState *game, char directrion);
 extern void loadMapTextures(GameState *game);
 extern void loadPlayerTextures(GameState *game);
@@ -35,9 +35,14 @@ void loadGame(GameState *game) {
 	// ## map variables ## 
 
 	//tree variables
-	game->gameObj.tree.x = 150;  //tree x position
-	game->gameObj.tree.y = 150;  //tree y position
-	game->gameObj.tree.area = 250;     //tree area
+	game->numbOfTrees = 2;
+	game->tree[0].x = 150;  //tree x position
+	game->tree[0].y = 150;  //tree y position
+	game->tree[0].area = 250;     //tree area
+
+	game->tree[1].x = 400;  //tree x position
+	game->tree[1].y = 150;  //tree y position
+	game->tree[1].area = 250;     //tree area
 
 	// ## load textures and fonts ## 
 	loadPlayerTextures(game); //load player texture
@@ -49,6 +54,7 @@ void loadGame(GameState *game) {
 
 	//set scroll var
 	game->scrollX = 0;
+
 	
 }
 
@@ -149,6 +155,8 @@ int processEvents(SDL_Window *window, GameState *game){
 int terminateGame(GameState *game, SDL_Window *window){
 	
 	printf("terminating game...\n");
+
+	//destroy player textures
 	SDL_DestroyTexture(game->player.wr[0]);
 	
 	SDL_DestroyTexture(game->player.wu[0]);
@@ -161,6 +169,9 @@ int terminateGame(GameState *game, SDL_Window *window){
 	SDL_DestroyTexture(game->player.wd[1]);
 	
 	SDL_DestroyTexture(game->player.currentText);
+
+	//destroy map textures
+	SDL_DestroyTexture(game->mapTextures.tree);
 	
 	//destroy font
 	if(game->hud.label != NULL){
@@ -182,8 +193,8 @@ int main(int argc, const char *argv[]){
 	GameState game;
 
 	//set window size
-	game.windowSize.x = 740;
-	game.windowSize.y = 580;
+	game.windowSize.x = 840;
+	game.windowSize.y = 680;
 
 	SDL_Window *window; 		//decalre window
 	SDL_Event event;    		//decalre event
@@ -211,8 +222,8 @@ int main(int argc, const char *argv[]){
 		//run input and continue or quit the game
 		game.running = processEvents(window, &game);
 
-		//process output
-		collision(&game);
+		//process tree collision
+		collision(&game, game.tree, game.numbOfTrees);
 
 		//render the game
 		doRender(&game);

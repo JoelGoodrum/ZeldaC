@@ -33,19 +33,17 @@ typedef struct
 
 } Player;
 
+typedef struct 
+{
+	SDL_Texture *tree;
+} MapTextures;
+
 //in game objects
 typedef struct 
 {
 	int x , y; //position
 	int area;
-	SDL_Texture *texture;
-} Tree;
-
-
-//in game objects
-typedef struct 
-{
-	Tree tree;
+	
 } GameObj;
 
 //window obj
@@ -53,6 +51,7 @@ typedef struct
 {
 	int x , y;
 } WindowSize;
+
 
 //heads up display obj
 typedef struct {
@@ -64,7 +63,7 @@ typedef struct {
 } HUD;
 
 	
-
+//game state struct
 typedef struct 
 {
 
@@ -74,14 +73,12 @@ typedef struct
 	//check if game is running
 	bool running;
 
-	//renderer
-	SDL_Renderer *rend;
-
 	// keep track of time to organize frames
 	int time;
 
 	//game objects
-	GameObj gameObj;
+	int numbOfTrees; //needs to be set to two in load game function
+	GameObj tree[2];
 
 	//player struct
 	Player player;
@@ -92,10 +89,16 @@ typedef struct
 	//mv camera
 	int scrollX, scrollY;
 
+	//renderer
+	SDL_Renderer *rend;
+
+	//map textures
+	MapTextures mapTextures;
+
 
 } GameState;
 
-void collision(GameState *game);
+void collision(GameState *game, GameObj *obj, int arrSize);
 void animate(GameState *game, char direction);
 void loadPlayerTextures(GameState *game);
 void loadFonts(GameState *game);
