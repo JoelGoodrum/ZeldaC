@@ -40,6 +40,9 @@ typedef struct
 	int area;
 	int health;
 	int attack; //attack is how much health they take from player	
+	int approach; //when player is at a certain distance, approach
+	int speed;
+
 } Enemy;
 
 
@@ -111,6 +114,7 @@ typedef struct
 void collision(GameState *game, GameObj *obj, int arrSize);
 void enemyCollision(GameState *game, Enemy *obj, int arrSize);
 void animate(GameState *game, char direction);
+void enemyMovement(GameState *game, Enemy *enemy, int arrSize);
 void loadPlayerTextures(GameState *game);
 void loadSkeletonTextures(GameState *game);
 void loadFonts(GameState *game);

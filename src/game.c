@@ -14,6 +14,7 @@
 extern void collision(GameState *game, GameObj *obj, int arrSize);
 extern void enemyCollision(GameState *game, Enemy *obj, int arrSize);
 extern void animate(GameState *game, char directrion);
+extern void enemyMovement(GameState *game, Enemy *enemy, int arrSize);
 extern void loadMapTextures(GameState *game);
 extern void loadPlayerTextures(GameState *game);
 extern void loadSkeletonTextures(GameState *game);
@@ -54,6 +55,8 @@ void loadGame(GameState *game) {
 	game->skeleton[0].y = -250;
 	game->skeleton[0].area = 100;
 	game->skeleton[0].attack = 10;
+	game->skeleton[0].approach = 500;
+	game->skeleton[0].speed = 3;
 
 	// ## load textures and fonts ## 
 	loadPlayerTextures(game); 
@@ -215,8 +218,8 @@ int main(int argc, const char *argv[]){
 	GameState game;
 
 	//set window size
-	game.windowSize.x = 840;
-	game.windowSize.y = 680;
+	game.windowSize.x = 1720;
+	game.windowSize.y = 1080;
 
 	SDL_Window *window; 		//decalre window
 	SDL_Event event;    		//decalre event
@@ -243,6 +246,8 @@ int main(int argc, const char *argv[]){
 
 		//run input and continue or quit the game
 		game.running = processEvents(window, &game);
+
+		enemyMovement(&game, game.skeleton, game.numbOfSkel);
 
 		//process tree collision
 		collision(&game, game.tree, game.numbOfTrees);

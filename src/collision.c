@@ -252,3 +252,37 @@ void animate(GameState *game, char direction) {
 	}
 
 }
+
+//enemy moves towards player after certain distance
+void enemyMovement(GameState *game, Enemy *enemy, int arrSize){
+	
+	Player *player= &game->player;
+
+	//import player position
+	float playerY = (float)player->y;
+	float playerX = (float)player->x;
+
+	for(int i = 0; i < arrSize; i++){	
+
+		//set enemy vars
+		float enemyY = (float)enemy[i].y;
+		float enemyX = (float)enemy[i].x;
+		float approach = (float)enemy[i].approach;
+		float speed = (float)enemy[i].speed;
+
+		//player is to the right of enemy
+		if(enemyX < playerX && enemyX + approach > playerX){
+			enemyX += speed;
+			enemy[i].x += speed;
+		}
+
+		//player is to the left of enemy 
+		if(playerX < enemyX && enemyX - approach < playerX){
+			enemyX -= speed;
+			enemy[i].x -= speed;
+		}
+
+		
+
+	}
+}
