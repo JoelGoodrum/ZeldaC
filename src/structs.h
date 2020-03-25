@@ -104,11 +104,6 @@ typedef struct
 	GameObj tree[2]; 			// tree objects, two are currently set
 	MapTextures mapTextures; 	//map textures
 
-
-
-	
-
-
 } GameState;
 
 void collision(GameState *game, GameObj *obj, int arrSize);

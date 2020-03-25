@@ -110,7 +110,7 @@ void enemyCollision(GameState *game, Enemy *obj, int arrSize) {
 				//correct playerX
 				game->player.x = (int)(objX + objA + enemyPush);
 				playerX = objX + objA + enemyPush;
-				game->player.health = game->player.health - obj[i].attack;
+				game->player.health = game->player.health - obj[i].attack; 		//remove health from player
 			}
 			
 
@@ -120,7 +120,7 @@ void enemyCollision(GameState *game, Enemy *obj, int arrSize) {
 				//correct playerX
 				game->player.x = (int)(objX - playerA - enemyPush);
 				playerX = objX - objA - enemyPush;
-				game->player.health = game->player.health - obj[i].attack;
+				game->player.health = game->player.health - obj[i].attack;		//remove health from player
 			}
 
 			
@@ -166,7 +166,6 @@ void animate(GameState *game, char direction) {
 
 	if(direction == 'R'){
 
-		//every 30 frames
 		if(game->time % frameFreq == 0){
 		
 			if(player->currentText == player->wr[0]){
@@ -183,7 +182,6 @@ void animate(GameState *game, char direction) {
 
 	if(direction == 'L'){
 
-		//every 30 frames
 		if(game->time % frameFreq == 0){
 		
 			if(player->currentText == player->wl[0]){
@@ -200,7 +198,6 @@ void animate(GameState *game, char direction) {
 
 	if(direction == 'U'){
 
-		//every 30 frames
 		if(game->time % frameFreq == 0){
 		
 			if(player->currentText == player->wu[0]){
@@ -217,7 +214,6 @@ void animate(GameState *game, char direction) {
 
 	if(direction == 'D'){
 
-		//every 30 frames
 		if(game->time % frameFreq == 0){
 		
 			if(player->currentText == player->wd[0]){
