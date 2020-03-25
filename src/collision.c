@@ -32,8 +32,7 @@ void collision(GameState *game, GameObj *obj, int arrSize) {
 
 		//if obj and player are on the same y axis
 		if(playerY + playerA > objY && playerY < (objY + objA)){
-
-			
+		
 			//rubbing againts right edge
 			if(playerX < (objX + objA) && (playerX + playerA) > (objX + objA)){
 				
@@ -50,7 +49,6 @@ void collision(GameState *game, GameObj *obj, int arrSize) {
 				game->player.x = (int)(objX - playerA);
 				playerX = objX - objA;
 			}
-
 			
 		}
 		
@@ -76,18 +74,10 @@ void collision(GameState *game, GameObj *obj, int arrSize) {
 				playerY = objY - playerA;
 
 			}
+
 		}
 
-
 	}
-
-
-	
-	
-
-			
-	
-
 	
 }
 
@@ -162,16 +152,7 @@ void enemyCollision(GameState *game, Enemy *obj, int arrSize) {
 			}
 		}
 
-
 	}
-
-
-	
-	
-
-			
-	
-
 	
 }
 
@@ -181,7 +162,7 @@ void enemyCollision(GameState *game, Enemy *obj, int arrSize) {
 void animate(GameState *game, char direction) {
 
 	Player *player = &game->player;
-	int frameFreq = 10;
+	int frameFreq = 8;
 
 	if(direction == 'R'){
 
@@ -312,9 +293,8 @@ void enemyMovement(GameState *game, Enemy *enemy, int arrSize){
 			enemy[i].y += speed;
 		}
 
-		
-
 	}
+
 }
 
 

@@ -181,22 +181,21 @@ int terminateGame(GameState *game, SDL_Window *window){
 	
 	printf("terminating game...\n");
 
-	//destroy player textures
+	//destroy player textures standing still
 	SDL_DestroyTexture(game->player.wr[0]);
-	
 	SDL_DestroyTexture(game->player.wu[0]);
 	SDL_DestroyTexture(game->player.wl[0]);
 	SDL_DestroyTexture(game->player.wd[0]);
 
+	//destroy textures in movement
 	SDL_DestroyTexture(game->player.wr[1]);
 	SDL_DestroyTexture(game->player.wu[1]);
 	SDL_DestroyTexture(game->player.wl[1]);
 	SDL_DestroyTexture(game->player.wd[1]);
 	
 	SDL_DestroyTexture(game->player.currentText);
-
-	//destroy map textures
-	SDL_DestroyTexture(game->mapTextures.tree);
+	SDL_DestroyTexture(game->mapTextures.tree);			//destroy map textures
+	SDL_DestroyTexture(game->enemyTextures.skeleton);
 	
 	//destroy font
 	if(game->hud.label != NULL){
@@ -214,8 +213,7 @@ int terminateGame(GameState *game, SDL_Window *window){
 //boot game
 int main(int argc, const char *argv[]){
 
-	//contains all game objects
-	GameState game;
+	GameState game;				//contains all game objects
 
 	//set window size
 	game.windowSize.x = 1720;
@@ -237,31 +235,18 @@ int main(int argc, const char *argv[]){
 
 	game.rend = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 		
-	//loads textures and player variables
-	loadGame(&game);
+	loadGame(&game);											//loads textures and player variables
 
 	printf("game is running\n");
 
 	while(game.running == true){
 
-		//run input and continue or quit the game
-		game.running = processEvents(window, &game);
-
-		enemyMovement(&game, game.skeleton, game.numbOfSkel);
-
-		//process tree collision
-		collision(&game, game.tree, game.numbOfTrees);
-
-		//process enemy collision
-		enemyCollision(&game, game.skeleton, game.numbOfSkel);
-
-		//render the game
-		doRender(&game);
-		
-		//check if player died
-		ifGameOver(&game);
-
-		
+		game.running = processEvents(window, &game);			//run input and continue or quit the game
+		enemyMovement(&game, game.skeleton, game.numbOfSkel);	//mv enemy towards player
+		collision(&game, game.tree, game.numbOfTrees); 			//process tree collision
+		enemyCollision(&game, game.skeleton, game.numbOfSkel);	//process enemy collision
+		doRender(&game);										//render the game
+		ifGameOver(&game);										//check if player died
 
 	}
 
