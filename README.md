@@ -4,6 +4,9 @@ Most of the code came from  https://www.youtube.com/watch?v=8Z796HGwYLE&list=PLT
 
 To run, download SDL
 `sudo apt-get install libsdl2-dev`
+`sudo apt-get install libsdl2-ttf-dev`
+`sudo apt-get install libsdl2-image-dev`
+
 then navigate to src/ inside ZeldaC directory
 `cd ZeldaC/src/`
 run comp file
