@@ -181,7 +181,7 @@ void enemyCollision(GameState *game, Enemy *obj, int arrSize) {
 void animate(GameState *game, char direction) {
 
 	Player *player = &game->player;
-	int frameFreq = 6;
+	int frameFreq = 10;
 
 	if(direction == 'R'){
 
@@ -256,7 +256,7 @@ void animate(GameState *game, char direction) {
 //see if player is in range of enemy in the y axis
 bool withInY(float playerY, float enemyY, float approach){
 	 	//withing y axis when player is above					//withing y axis when player is below
-	if( (playerY < enemyY && enemyY - approach < playerY) || (playerY > enemyY && enemyY + approach > playerY) ){
+	if( (playerY <= enemyY && enemyY - approach <= playerY) || (playerY >= enemyY && enemyY + approach >= playerY) ){
 			return true;
 	}
 	return false;
@@ -265,7 +265,7 @@ bool withInY(float playerY, float enemyY, float approach){
 //see if player is in range of enemy in the x axis
 bool withInX(float playerX, float enemyX, float approach){
 	 	//withing x axis when player is to the right					//withing x axis when player is left of enemy
-	if( (enemyX < playerX && enemyX + approach > playerX) || (playerX < enemyX && enemyX - approach < playerX) ){
+	if( (enemyX <= playerX && enemyX + approach >= playerX) || (playerX <= enemyX && enemyX - approach <= playerX) ){
 			return true;
 	}
 	return false;
