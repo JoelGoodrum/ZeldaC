@@ -253,6 +253,24 @@ void animate(GameState *game, char direction) {
 
 }
 
+//see if player is in range of enemy in the y axis
+bool withInY(float playerY, float enemyY, float approach){
+	 	//withing y axis when player is above					//withing y axis when player is below
+	if( (playerY < enemyY && enemyY - approach < playerY) || (playerY > enemyY && enemyY + approach > playerY) ){
+			return true;
+	}
+	return false;
+}
+
+//see if player is in range of enemy in the x axis
+bool withInX(float playerX, float enemyX, float approach){
+	 	//withing x axis when player is to the right					//withing x axis when player is left of enemy
+	if( (enemyX < playerX && enemyX + approach > playerX) || (playerX < enemyX && enemyX - approach < playerX) ){
+			return true;
+	}
+	return false;
+}
+
 //enemy moves towards player after certain distance
 void enemyMovement(GameState *game, Enemy *enemy, int arrSize){
 	
@@ -271,18 +289,32 @@ void enemyMovement(GameState *game, Enemy *enemy, int arrSize){
 		float speed = (float)enemy[i].speed;
 
 		//player is to the right of enemy
-		if(enemyX < playerX && enemyX + approach > playerX){
+		if(enemyX < playerX && withInX(playerX, enemyX, approach) && withInY(playerY, enemyY, approach)){
 			enemyX += speed;
 			enemy[i].x += speed;
 		}
 
 		//player is to the left of enemy 
-		if(playerX < enemyX && enemyX - approach < playerX){
+		if(playerX < enemyX && withInX(playerX, enemyX, approach) && withInY(playerY, enemyY, approach)){
 			enemyX -= speed;
 			enemy[i].x -= speed;
+		}
+
+		//player is above the enemy
+		if(playerY < enemyY && withInX(playerX, enemyX, approach) && withInY(playerY, enemyY, approach)){
+			enemyY -= speed;
+			enemy[i].y -= speed;
+		}
+
+		//player is below the enemy 
+		if(playerY > enemyY && withInX(playerX, enemyX, approach) && withInY(playerY, enemyY, approach)){
+			enemyY += speed;
+			enemy[i].y += speed;
 		}
 
 		
 
 	}
 }
+
+
