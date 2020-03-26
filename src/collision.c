@@ -9,6 +9,8 @@
 //custom lib
 #include "structs.h"
 
+extern void drawSpeechBubble(GameState *game, Character *character);
+
 
 // collision detection out of bounds
 // returns true if there is an object in the way
@@ -106,6 +108,8 @@ void characterCollision(GameState *game, Character *obj, int arrSize) {
 			//rubbing againts right edge
 			if(playerX < (objX + objA) && (playerX + playerA) > (objX + objA)){
 				
+				drawSpeechBubble(game, &obj[i]);
+
 				//correct playerX
 				game->player.x = (int)(objX + objA);
 				playerX = objX + objA;
@@ -115,6 +119,7 @@ void characterCollision(GameState *game, Character *obj, int arrSize) {
 			//rubbing againts left edge
 			else if(playerX + playerA > objX && playerX < objX){
 				
+
 				//correct playerX
 				game->player.x = (int)(objX - playerA);
 				playerX = objX - objA;
@@ -129,7 +134,9 @@ void characterCollision(GameState *game, Character *obj, int arrSize) {
 
 			//if bumping head
 			if(playerY < (objY + objA) && player->y > objY){
+
 				
+
 				//correct y
 				game->player.y = (int)(objY + objA);
 				playerY = objY + objA;
@@ -138,6 +145,7 @@ void characterCollision(GameState *game, Character *obj, int arrSize) {
 			
 			//if bumping feet
 			else if(playerY + playerA > objY && playerY < objY){
+				
 
 				//correct y
 				game->player.y = (int)(objY - playerA);

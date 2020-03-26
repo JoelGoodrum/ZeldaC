@@ -8,6 +8,7 @@
 //custom lib
 #include "structs.h"
 
+extern void doRender(GameState *game);
 
 //make texture out of images
 void loadPlayerTextures(GameState *game ){
@@ -383,4 +384,32 @@ void drawGameOver(GameState *game){
 	SDL_RenderPresent(game->rend); //when done drawing, present drawing
 
 
+}
+
+void drawSpeechBubble(GameState *game, Character *character){
+
+	//make bubble rectangle
+	int padding = 30;
+	int bubbleH = 230;
+
+	//draw speech bubble
+	SDL_SetRenderDrawColor(game->rend, 0, 0, 150, 255);
+	SDL_Rect bubbleRect = {padding , game->windowSize.y - (bubbleH +  padding), game->windowSize.x - (padding*2), bubbleH};
+	SDL_RenderFillRect(game->rend, &bubbleRect);
+
+	//draw speech
+	SDL_Color white = { 240, 240, 240, 255};
+	SDL_Surface *tmp = TTF_RenderText_Blended(game->hud.font, character->speech, white);
+	game->hud.label = SDL_CreateTextureFromSurface(game->rend, tmp);
+	
+	SDL_Rect textRect = { padding * 2, game->windowSize.y - bubbleH + padding, tmp->w, tmp->h};
+	SDL_RenderCopy(game->rend, game->hud.label, NULL, &textRect);
+
+	//terminate hud
+	SDL_FreeSurface(tmp);
+
+	SDL_RenderPresent(game->rend);
+	SDL_Delay(3000);
+	doRender(game);
+	
 }

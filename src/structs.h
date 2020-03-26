@@ -152,6 +152,7 @@ void drawPlayer(GameState *game);
 void drawEnemies(GameState *game);
 void drawHUD(GameState *game);
 void drawGameOver(GameState *game);
+void drawSpeechBubble(GameState *game, Character *character);
 
 void attackAnimation(GameState *game, bool pressed, char direction);
 void deAttackAnimation(GameState *game, char direction);

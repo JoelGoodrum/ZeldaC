@@ -66,7 +66,7 @@ void loadGame(GameState *game) {
 	game->lostGuy.x = 210;
 	game->lostGuy.y = 350;
 	game->lostGuy.area = 100;
-	game->lostGuy.speech = "Hey?!?!\nCan you please kill that skeleton up there?";
+	game->lostGuy.speech = "Hey?!?!  Can you please kill that skeleton up there?";
 	game->characters[0] = game->lostGuy;
 	// ## map variables ## 
 
