@@ -235,6 +235,26 @@ void loadMapTextures(GameState *game){
 	// tree texture loaded
 }
 
+void loadCharacterTextures(GameState *game){
+
+	//load lost guy texture
+    SDL_Surface *characterSurface;
+
+    char *path = "../res/lostGuy.png";
+
+	characterSurface = IMG_Load(path);
+	if(characterSurface == NULL) {
+		printf("cannot find %s: \n", path);
+		SDL_Quit();
+		exit(1);
+	}
+
+	game->lostGuy.texture = SDL_CreateTextureFromSurface(game->rend, characterSurface);
+	SDL_FreeSurface(characterSurface);
+	// lost guy texture loaded
+
+}
+
 //code from https://www.youtube.com/watch?v=8Z796HGwYLE&list=PLT6WFYYZE6uLMcPGS3qfpYm7T_gViYMMt&index=13
 void loadFonts(GameState *game){
 	game->hud.font = TTF_OpenFont("../res/Peepo.ttf", 28);
@@ -280,6 +300,23 @@ void drawPlayer(GameState *game){
 	SDL_RenderCopy(game->rend, game->player.currentText, NULL, &playerRect);
 }
 
+void drawCharacters(GameState *game){
+
+	int scrollX = game->scrollX;
+	int scrollY = game->scrollY;
+	int numbOfCharacters = 1;
+
+	//draw all characters
+	for(int i = 0; i < numbOfCharacters; i++){
+
+		Character *character = &game->characters[i];
+		SDL_Rect charcaterRect = {scrollX + character[i].x, scrollY + character[i].y, character[i].area, character[i].area};
+		SDL_RenderCopy(game->rend, character[i].texture, NULL, &charcaterRect);
+
+	}
+
+}
+
 void drawEnemies(GameState *game){
 
 	int scrollX = game->scrollX;
@@ -290,9 +327,9 @@ void drawEnemies(GameState *game){
 
 		//draw skeleton if alive
 		if(game->skeleton[i].health > 0){
+
 			SDL_Rect skelRect = {scrollX + game->skeleton[i].x, scrollY + game->skeleton[i].y, 100, 100};
 			SDL_RenderCopy(game->rend, game->skeleton[i].currentText, NULL, &skelRect);
-
 		}
 
 				

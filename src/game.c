@@ -13,20 +13,26 @@
 
 extern void collision(GameState *game, GameObj *obj, int arrSize);
 extern void enemyCollision(GameState *game, Enemy *obj, int arrSize);
+extern void characterCollision(GameState *game, Character *obj, int arrSize);
 extern void animate(GameState *game, char directrion);
 extern void enemyMovement(GameState *game, Enemy *enemy, int arrSize);
+
 extern void loadMapTextures(GameState *game);
 extern void loadPlayerTextures(GameState *game);
 extern void loadSkeletonTextures(GameState *game);
+extern void loadCharacterTextures(GameState *game);
 extern void loadFonts(GameState *game);
+
 extern void drawMap(GameState *game);
 extern void drawEnemies(GameState *game);
 extern void drawHUD(GameState *game);
 extern void drawPlayer(GameState *game);
 extern void drawGameOver(GameState *game);
+
 extern void attackAnimation(GameState *game, bool pressed, char directrion);
 extern void deAttackAnimation(GameState *game, char directrion);
 extern void animateEnemies(GameState *game);
+extern void drawCharacters(GameState *game);
 
 
 //load function
@@ -35,6 +41,7 @@ void loadGame(GameState *game) {
 	// ## load textures and fonts ## 
 	loadPlayerTextures(game); 
 	loadSkeletonTextures(game); 
+	loadCharacterTextures(game);
 	loadMapTextures(game);    
 	loadFonts(game);		
 
@@ -54,6 +61,13 @@ void loadGame(GameState *game) {
 	game->player.isAttack = false;
 	game->player.lastDirection = 'D';
 
+	//character variables
+	//character[0] is lost guy
+	game->lostGuy.x = 210;
+	game->lostGuy.y = 350;
+	game->lostGuy.area = 100;
+	game->lostGuy.speech = "Hey?!?!\nCan you please kill that skeleton up there?";
+	game->characters[0] = game->lostGuy;
 	// ## map variables ## 
 
 	//tree variables
@@ -78,9 +92,7 @@ void loadGame(GameState *game) {
 	game->skeleton[0].isDamaged = false;
 	game->skeleton[0].damageTime = 0;
 	game->skeleton[0].currentText = game->enemyTextures.skeleton;
-
-  
-
+	
 	
 }
 
@@ -90,9 +102,11 @@ void doRender(GameState *game) {
 	SDL_RenderClear(game->rend); 	//clear the screen
 
 	//draw functions
-	drawMap(game);
+	drawMap(game);	
 	drawEnemies(game);
+	
 	drawPlayer(game);
+	drawCharacters(game);
 	drawHUD(game);
 
 	SDL_RenderPresent(game->rend); //when done drawing, present drawing
@@ -292,6 +306,7 @@ int main(int argc, const char *argv[]){
 		game.running = processEvents(window, &game);			//run input and continue or quit the game
 		enemyMovement(&game, game.skeleton, game.numbOfSkel);	//mv enemy towards player
 		collision(&game, game.tree, game.numbOfTrees); 			//process tree collision
+		characterCollision(&game, game.characters, 1);
 		enemyCollision(&game, game.skeleton, game.numbOfSkel);	//process enemy collision
 		animateEnemies(&game);
 		doRender(&game);										//render the game

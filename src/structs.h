@@ -36,6 +36,14 @@ typedef struct
 
 } Player;
 
+typedef struct 
+{
+	int x , y;
+	int area;
+	char *speech;
+	SDL_Texture *texture;
+} Character;
+
 //enemy textures
 typedef struct 
 {
@@ -73,6 +81,7 @@ typedef struct
 {
 	int x , y; //position
 	int area;
+
 } GameObj;
 
 
@@ -106,13 +115,18 @@ typedef struct
 	bool running; 					// check if game is running
 	int time; 						// keep track of time to organize frames
 	int scrollX, scrollY;   		// mv camera
-	Player player;  
-	int numbOfSkel;        			// player obj
+	Player player;  				// player obj
+	
+	// skeleton
+	int numbOfSkel;        			
 	Enemy skeleton[1];				// enemy obj
 	EnemyTextures enemyTextures; 	// enemy texture
 	TTF_Font *gameOverFont;
 	bool spacePressed;				// if space bar is pressed, set to ture
 
+	//characters
+	Character lostGuy;
+	Character characters[1];
 
 	// ## MAP ## //
 
@@ -124,16 +138,22 @@ typedef struct
 
 void collision(GameState *game, GameObj *obj, int arrSize);
 void enemyCollision(GameState *game, Enemy *obj, int arrSize);
+void characterCollision(GameState *game, Character *obj, int arrSize);
 void animate(GameState *game, char direction);
 void enemyMovement(GameState *game, Enemy *enemy, int arrSize);
+
 void loadPlayerTextures(GameState *game);
 void loadSkeletonTextures(GameState *game);
+void loadCharacterTextures(GameState *game);
 void loadFonts(GameState *game);
+
 void drawMap(GameState *game);
 void drawPlayer(GameState *game);
 void drawEnemies(GameState *game);
 void drawHUD(GameState *game);
 void drawGameOver(GameState *game);
+
 void attackAnimation(GameState *game, bool pressed, char direction);
 void deAttackAnimation(GameState *game, char direction);
 void animateEnemies(GameState *game);
+void drawCharacters(GameState *game);
