@@ -40,6 +40,8 @@ typedef struct
 typedef struct 
 {
 	SDL_Texture *skeleton;
+	SDL_Texture *damaged;
+	
 } EnemyTextures;
 
 //enemies obj
@@ -51,6 +53,10 @@ typedef struct
 	int attack; //attack is how much health they take from player	
 	int approach; //when player is at a certain distance, approach
 	int speed;
+	bool isDamaged; //when set true, skeleton frame changes
+	int damageTime; //how long damaged animation is on
+
+	SDL_Texture *currentText; //skeleton current texture
 
 } Enemy;
 
@@ -130,3 +136,4 @@ void drawHUD(GameState *game);
 void drawGameOver(GameState *game);
 void attackAnimation(GameState *game, bool pressed, char direction);
 void deAttackAnimation(GameState *game, char direction);
+void animateEnemies(GameState *game);

@@ -26,10 +26,22 @@ extern void drawPlayer(GameState *game);
 extern void drawGameOver(GameState *game);
 extern void attackAnimation(GameState *game, bool pressed, char directrion);
 extern void deAttackAnimation(GameState *game, char directrion);
+extern void animateEnemies(GameState *game);
 
 
 //load function
 void loadGame(GameState *game) {
+
+	// ## load textures and fonts ## 
+	loadPlayerTextures(game); 
+	loadSkeletonTextures(game); 
+	loadMapTextures(game);    
+	loadFonts(game);		
+
+	//game variables
+	game->spacePressed = false;
+	game->player.currentText = game->player.wd[0]; //set first frame
+	game->scrollX = 0;							   //set scroll var
 
 	//player variables
 	game->player.area = 115;  //set player area
@@ -40,6 +52,7 @@ void loadGame(GameState *game) {
 	game->player.health = 100;
 	game->player.attack = 30;
 	game->player.isAttack = false;
+	game->player.lastDirection = 'D';
 
 	// ## map variables ## 
 
@@ -62,20 +75,11 @@ void loadGame(GameState *game) {
 	game->skeleton[0].approach = 500;
 	game->skeleton[0].speed = 3;
 	game->skeleton[0].health = 100;
-	game->spacePressed = false;
-	game->player.lastDirection = 'D';
+	game->skeleton[0].isDamaged = false;
+	game->skeleton[0].damageTime = 0;
+	game->skeleton[0].currentText = game->enemyTextures.skeleton;
 
-	// ## load textures and fonts ## 
-	loadPlayerTextures(game); 
-	loadSkeletonTextures(game); 
-	loadMapTextures(game);    
-	loadFonts(game);		  
-
-	//set first frame
-	game->player.currentText = game->player.wd[0];
-
-	//set scroll var
-	game->scrollX = 0;
+  
 
 	
 }
@@ -127,30 +131,35 @@ int processEvents(SDL_Window *window, GameState *game){
 			case SDL_KEYUP:
 				switch(event.key.keysym.sym){
 
-					//space bar must be up to change standig still animation
-					case SDLK_SPACE:
-						switch(event.key.keysym.sym){
-
-							case SDLK_RIGHT:
-								game->player.currentText = game->player.wr[0]; 
-								break;
-
-							case SDLK_LEFT && SDLK_SPACE:
-								game->player.currentText = game->player.wl[0];
-								break;
-
-							case SDLK_UP:
-								game->player.currentText = game->player.wu[0];
-								break;
-							case SDLK_DOWN:
-								game->player.currentText = game->player.wd[0];
-								break;
-
-							case SDLK_SPACE:
-								deAttackAnimation(game, game->player.lastDirection);
-								game->spacePressed = false;
-								break;
+					case SDLK_RIGHT:
+						if(!game->player.isAttack){
+							game->player.currentText = game->player.wr[0]; 
 						}
+						break;
+						
+
+					case SDLK_LEFT:
+						if(!game->player.isAttack){
+							game->player.currentText = game->player.wl[0];
+						}
+						break;
+
+					case SDLK_UP:
+						if(!game->player.isAttack){
+							game->player.currentText = game->player.wu[0];
+						}
+						break;
+					case SDLK_DOWN:
+						if(!game->player.isAttack){
+							game->player.currentText = game->player.wd[0];
+						}
+						break;
+
+					case SDLK_SPACE:
+						deAttackAnimation(game, game->player.lastDirection);
+						game->spacePressed = false;
+						break;
+				
 
 				}
 				break;
@@ -284,6 +293,7 @@ int main(int argc, const char *argv[]){
 		enemyMovement(&game, game.skeleton, game.numbOfSkel);	//mv enemy towards player
 		collision(&game, game.tree, game.numbOfTrees); 			//process tree collision
 		enemyCollision(&game, game.skeleton, game.numbOfSkel);	//process enemy collision
+		animateEnemies(&game);
 		doRender(&game);										//render the game
 		ifGameOver(&game);										//check if player died
 

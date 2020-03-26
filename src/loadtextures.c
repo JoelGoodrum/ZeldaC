@@ -199,6 +199,20 @@ void loadSkeletonTextures(GameState *game){
 	game->enemyTextures.skeleton = SDL_CreateTextureFromSurface(game->rend, skelSurface);
 	SDL_FreeSurface(skelSurface);
 	// skeleton texture loaded
+
+	//load damaged skeleton texture
+	path = "../res/skeleton/dd.png";
+
+	skelSurface = IMG_Load(path);
+	if(skelSurface == NULL) {
+		printf("cannot find %s: \n", path);
+		SDL_Quit();
+		exit(1);
+	}
+
+	game->enemyTextures.damaged = SDL_CreateTextureFromSurface(game->rend, skelSurface);
+	SDL_FreeSurface(skelSurface);
+	//damaged skeleton texture loaded
 }
 
 //load map textures
@@ -246,12 +260,11 @@ void drawMap(GameState *game){
 	SDL_SetRenderDrawColor(game->rend, 50, 140, 50, 255);
 
 	//draw trees
-	
 	for(int i = 0; i < game->numbOfTrees; i++){
 		SDL_Rect treeRect = {scrollX + game->tree[i].x, scrollY + game->tree[i].y, game->tree[i].area, game->tree[i].area};
 		SDL_RenderCopy(game->rend, game->mapTextures.tree, NULL, &treeRect);
 	}
-	//port tree obj
+	
 	
 	
 }
@@ -278,7 +291,8 @@ void drawEnemies(GameState *game){
 		//draw skeleton if alive
 		if(game->skeleton[i].health > 0){
 			SDL_Rect skelRect = {scrollX + game->skeleton[i].x, scrollY + game->skeleton[i].y, 100, 100};
-			SDL_RenderCopy(game->rend, game->enemyTextures.skeleton, NULL, &skelRect);
+			SDL_RenderCopy(game->rend, game->skeleton[i].currentText, NULL, &skelRect);
+
 		}
 
 				

@@ -84,7 +84,7 @@ void collision(GameState *game, GameObj *obj, int arrSize) {
 void enemyCollision(GameState *game, Enemy *obj, int arrSize) {
 
 	WindowSize *win = &game->windowSize;
-	int pushEnemies = 100;
+	int pushEnemies = 200;
 
 	Player *player= &game->player;
 	float playerY = (float)player->y;
@@ -114,6 +114,9 @@ void enemyCollision(GameState *game, Enemy *obj, int arrSize) {
 					if(game->player.isAttack){
 						obj->x = obj->x - pushEnemies;
 						obj->health = obj->health - game->player.attack;
+
+						obj->isDamaged = true;
+						obj->damageTime = 1;
 					} 
 
 					else {
@@ -132,6 +135,8 @@ void enemyCollision(GameState *game, Enemy *obj, int arrSize) {
 					if(game->player.isAttack){
 						obj->x = obj->x + pushEnemies;
 						obj->health = obj->health - game->player.attack;
+						obj->isDamaged = true;
+						obj->damageTime = 1;
 					}
 
 					else{
@@ -159,6 +164,8 @@ void enemyCollision(GameState *game, Enemy *obj, int arrSize) {
 					if(game->player.isAttack){
 						obj->y = obj->y - pushEnemies;
 						obj->health = obj->health - game->player.attack;
+						obj->isDamaged = true;
+						obj->damageTime = 1;
 					}
 
 					else {
@@ -179,6 +186,8 @@ void enemyCollision(GameState *game, Enemy *obj, int arrSize) {
 					if(game->player.isAttack){
 						obj->y = obj->y + pushEnemies;
 						obj->health = obj->health - game->player.attack;
+						obj->isDamaged = true;
+						obj->damageTime = 1;
 					}
 
 					else {
@@ -453,3 +462,31 @@ void deAttackAnimation(GameState *game, char direction){
 
 }
 
+void animateEnemies(GameState *game){
+
+	
+	int numbOfSkel = 1;
+	int frameFreq = 60;
+
+	//iterate all skeletons
+	for(int i = 0; i < numbOfSkel; i++){
+		if(game->skeleton[i].isDamaged){
+
+			//display damaged frame
+			game->skeleton[i].currentText = game->enemyTextures.damaged;
+
+			//progress damaged timer
+			if(game->time % frameFreq == 0){
+				game->skeleton[i].damageTime -= 1;
+			} 
+
+			// if damaged time hits 0, enemy isnt damaged anymore
+			if(game->skeleton[i].damageTime == 0){
+				game->skeleton[i].isDamaged = false;
+				game->skeleton[i].currentText = game->enemyTextures.skeleton;
+			}
+		}
+
+	}
+
+}
