@@ -38,6 +38,8 @@ void loadGame(GameState *game) {
 	game->player.x = (game->windowSize.x / 2) - (game->player.area / 2); //start in the middle of x axis
 	game->player.y = (game->windowSize.y / 2) - (game->player.area / 2); //start in the middle of y axis
 	game->player.health = 100;
+	game->player.attack = 30;
+	game->player.isAttack = false;
 
 	// ## map variables ## 
 
@@ -59,6 +61,7 @@ void loadGame(GameState *game) {
 	game->skeleton[0].attack = 10;
 	game->skeleton[0].approach = 500;
 	game->skeleton[0].speed = 3;
+	game->skeleton[0].health = 100;
 	game->spacePressed = false;
 	game->player.lastDirection = 'D';
 
@@ -123,7 +126,7 @@ int processEvents(SDL_Window *window, GameState *game){
 			//set standing still frame
 			case SDL_KEYUP:
 				switch(event.key.keysym.sym){
-					
+
 					//space bar must be up to change standig still animation
 					case SDLK_SPACE:
 						switch(event.key.keysym.sym){

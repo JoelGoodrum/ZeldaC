@@ -274,8 +274,14 @@ void drawEnemies(GameState *game){
 
 	//draw skeleton at current postion
 	for(int i = 0; i < game->numbOfSkel; i++){
-		SDL_Rect skelRect = {scrollX + game->skeleton[i].x, scrollY + game->skeleton[i].y, 100, 100};
-		SDL_RenderCopy(game->rend, game->enemyTextures.skeleton, NULL, &skelRect);
+
+		//draw skeleton if alive
+		if(game->skeleton[i].health > 0){
+			SDL_Rect skelRect = {scrollX + game->skeleton[i].x, scrollY + game->skeleton[i].y, 100, 100};
+			SDL_RenderCopy(game->rend, game->enemyTextures.skeleton, NULL, &skelRect);
+		}
+
+				
 	}
 
 }

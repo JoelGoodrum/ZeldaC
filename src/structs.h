@@ -13,6 +13,7 @@ typedef struct
 	int x , y;     // player position
 	int area;	   // player area	
 	int health;    // player health
+	int attack;		//player attack
 	bool isAttack; // true if spacebar is pressed
 	char lastDirection; 
 
