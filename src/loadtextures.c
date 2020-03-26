@@ -126,6 +126,21 @@ void loadPlayerTextures(GameState *game ){
 	//#### font texture ##########//
 	game->hud.label = NULL;
 
+
+	// ## attack textures ## //
+	path = "../res/linkAttack/wdA.png";
+
+	playerSurface = IMG_Load(path);
+	if(playerSurface == NULL) {
+		printf("cannot find %s: \n", path);
+		SDL_Quit();
+		exit(1);
+	}
+	
+	game->player.ad = SDL_CreateTextureFromSurface(game->rend, playerSurface);
+	SDL_FreeSurface(playerSurface);
+
+
 }
 
 //load enemy textures
@@ -210,7 +225,7 @@ void drawPlayer(GameState *game){
 	int scrollY = game->scrollY;
 
 	//draw player at current postion
-	SDL_Rect playerRect = {scrollX + game->player.x, scrollY + game->player.y, 100, 100};
+	SDL_Rect playerRect = {scrollX + game->player.x, scrollY + game->player.y, game->player.area, game->player.area};
 	SDL_RenderCopy(game->rend, game->player.currentText, NULL, &playerRect);
 }
 

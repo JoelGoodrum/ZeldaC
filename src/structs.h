@@ -10,9 +10,10 @@
 //player obj
 typedef struct 
 {
-	int x , y;  // player position
-	int area;	// player area	
-	int health; // player health
+	int x , y;     // player position
+	int area;	   // player area	
+	int health;    // player health
+	bool isAttack; // true if spacebar is pressed
 
 	//animation frames
 
@@ -22,6 +23,9 @@ typedef struct
 	SDL_Texture *wl[2];
 	SDL_Texture *wu[2];
 	SDL_Texture *wd[2];
+
+	//attack textures
+	SDL_Texture *ad;
 	
 	SDL_Texture *currentText; //current texture of character
 
@@ -118,3 +122,5 @@ void drawPlayer(GameState *game);
 void drawEnemies(GameState *game);
 void drawHUD(GameState *game);
 void drawGameOver(GameState *game);
+void attackAnimation(GameState *game, bool pressed);
+void deAttackAnimation(GameState *game, bool pressed);

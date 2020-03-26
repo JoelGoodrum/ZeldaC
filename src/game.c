@@ -24,13 +24,15 @@ extern void drawEnemies(GameState *game);
 extern void drawHUD(GameState *game);
 extern void drawPlayer(GameState *game);
 extern void drawGameOver(GameState *game);
+extern void attackAnimation(GameState *game, bool pressed);
+extern void deAttackAnimation(GameState *game, bool pressed);
 
 
 //load function
 void loadGame(GameState *game) {
 
 	//player variables
-	game->player.area = 100;  //set player area
+	game->player.area = 115;  //set player area
 	game->time = 0; 		  //start game time
 	game->running = true;     //signal that game is on
 	game->player.x = (game->windowSize.x / 2) - (game->player.area / 2); //start in the middle of x axis
@@ -93,7 +95,7 @@ int processEvents(SDL_Window *window, GameState *game){
 
 	SDL_Event event;
 	int notDone = true;
-
+	bool spacePressed = false;
 	const Uint8 *state = SDL_GetKeyboardState(NULL);
 
 	while(SDL_PollEvent(&event)){
@@ -106,6 +108,16 @@ int processEvents(SDL_Window *window, GameState *game){
 				notDone = false;
 				break;
 
+		
+			case SDL_KEYDOWN:
+				switch(event.key.keysym.sym){
+					case SDLK_SPACE:
+						attackAnimation(game, spacePressed);
+						spacePressed = true;
+						break;
+						
+				}
+				break;
 
 			//set standing still frame
 			case SDL_KEYUP:
@@ -122,8 +134,16 @@ int processEvents(SDL_Window *window, GameState *game){
 					case SDLK_DOWN:
 						game->player.currentText = game->player.wd[0];
 						break;
+
+					case SDLK_SPACE:
+						deAttackAnimation(game, spacePressed);
+						spacePressed = false;
+						break;
+
 				}
 				break;
+
+
 
 		}
 	}
@@ -216,8 +236,8 @@ int main(int argc, const char *argv[]){
 	GameState game;				//contains all game objects
 
 	//set window size
-	game.windowSize.x = 1720;
-	game.windowSize.y = 1080;
+	game.windowSize.x = 1180;
+	game.windowSize.y = 680;
 
 	SDL_Window *window; 		//decalre window
 	SDL_Event event;    		//decalre event

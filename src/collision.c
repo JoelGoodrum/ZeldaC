@@ -293,4 +293,25 @@ void enemyMovement(GameState *game, Enemy *enemy, int arrSize){
 
 }
 
+void attackAnimation(GameState *game, bool pressed){
+
+	if(pressed == true){
+		game->scrollX = game->scrollX + 500;
+	}
+
+	game->player.area = 202;
+	game->player.currentText = game->player.ad;
+	game->player.isAttack = true;
+}
+
+void deAttackAnimation(GameState *game, bool pressed){
+	
+	if(pressed == true){
+		game->scrollX += 45;
+	}
+
+	game->player.area = 115;
+	game->player.isAttack = false;
+	game->player.currentText = game->player.wd[0];
+}
 
