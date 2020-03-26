@@ -140,6 +140,44 @@ void loadPlayerTextures(GameState *game ){
 	game->player.ad = SDL_CreateTextureFromSurface(game->rend, playerSurface);
 	SDL_FreeSurface(playerSurface);
 
+	// ## ##################### //
+	path = "../res/linkAttack/wuA.png";
+
+	playerSurface = IMG_Load(path);
+	if(playerSurface == NULL) {
+		printf("cannot find %s: \n", path);
+		SDL_Quit();
+		exit(1);
+	}
+	
+	game->player.au = SDL_CreateTextureFromSurface(game->rend, playerSurface);
+	SDL_FreeSurface(playerSurface);
+
+		// ## ##################### //
+	path = "../res/linkAttack/wlA.png";
+
+	playerSurface = IMG_Load(path);
+	if(playerSurface == NULL) {
+		printf("cannot find %s: \n", path);
+		SDL_Quit();
+		exit(1);
+	}
+	
+	game->player.al = SDL_CreateTextureFromSurface(game->rend, playerSurface);
+	SDL_FreeSurface(playerSurface);
+
+		// ## ##################### //
+	path = "../res/linkAttack/wrA.png";
+
+	playerSurface = IMG_Load(path);
+	if(playerSurface == NULL) {
+		printf("cannot find %s: \n", path);
+		SDL_Quit();
+		exit(1);
+	}
+	
+	game->player.ar = SDL_CreateTextureFromSurface(game->rend, playerSurface);
+	SDL_FreeSurface(playerSurface);
 
 }
 

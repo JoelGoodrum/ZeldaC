@@ -309,10 +309,56 @@ void attackAnimation(GameState *game, bool pressed, char direction){
 			game->player.isAttack = true;
 
 	}
+
+	if(direction == 'U'){
+
+		if(pressed == false){
+			//adjust player axis according to img size diff between stading still frame and attack frame 
+			game->player.x = game->player.x - 44;
+			game->player.y = game->player.y - 44;
+		}
+		
+
+			game->player.area = 202;
+			game->player.currentText = game->player.au;
+			game->player.isAttack = true;
+
+	}
+
+	if(direction == 'L'){
+
+		if(pressed == false){
+			//adjust player axis according to img size diff between stading still frame and attack frame 
+			game->player.x = game->player.x - 44;
+			game->player.y = game->player.y - 44;
+		}
+		
+
+			game->player.area = 202;
+			game->player.currentText = game->player.al;
+			game->player.isAttack = true;
+
+	}
+
 	
+	if(direction == 'R'){
+
+		if(pressed == false){
+			//adjust player axis according to img size diff between stading still frame and attack frame 
+			game->player.x = game->player.x - 44;
+			game->player.y = game->player.y - 44;
+		}
+		
+
+			game->player.area = 202;
+			game->player.currentText = game->player.ar;
+			game->player.isAttack = true;
+
+	}
 
 	
 
+	
 
 }
 
@@ -326,6 +372,39 @@ void deAttackAnimation(GameState *game, char direction){
 		game->player.area = 115;
 		game->player.isAttack = false;
 		game->player.currentText = game->player.wd[0];
+
+	}
+
+	if(direction == 'U'){
+		game->player.x = game->player.x + 44;
+		game->player.y = game->player.y + 44;
+		
+
+		game->player.area = 115;
+		game->player.isAttack = false;
+		game->player.currentText = game->player.wu[0];
+
+	}
+
+	if(direction == 'L'){
+		game->player.x = game->player.x + 44;
+		game->player.y = game->player.y + 44;
+		
+
+		game->player.area = 115;
+		game->player.isAttack = false;
+		game->player.currentText = game->player.wl[0];
+
+	}
+
+	if(direction == 'R'){
+		game->player.x = game->player.x + 44;
+		game->player.y = game->player.y + 44;
+		
+
+		game->player.area = 115;
+		game->player.isAttack = false;
+		game->player.currentText = game->player.wr[0];
 
 	}
 

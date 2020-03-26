@@ -27,6 +27,9 @@ typedef struct
 
 	//attack textures
 	SDL_Texture *ad;
+	SDL_Texture *au;
+	SDL_Texture *al;
+	SDL_Texture *ar;
 	
 	SDL_Texture *currentText; //current texture of character
 

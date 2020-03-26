@@ -123,23 +123,31 @@ int processEvents(SDL_Window *window, GameState *game){
 			//set standing still frame
 			case SDL_KEYUP:
 				switch(event.key.keysym.sym){
-					case SDLK_RIGHT:
-						game->player.currentText = game->player.wr[0]; 
-						break;
-					case SDLK_LEFT:
-						game->player.currentText = game->player.wl[0];
-						break;
-					case SDLK_UP:
-						game->player.currentText = game->player.wu[0];
-						break;
-					case SDLK_DOWN:
-						game->player.currentText = game->player.wd[0];
-						break;
-
+					
+					//space bar must be up to change standig still animation
 					case SDLK_SPACE:
-						deAttackAnimation(game, game->player.lastDirection);
-						game->spacePressed = false;
-						break;
+						switch(event.key.keysym.sym){
+
+							case SDLK_RIGHT:
+								game->player.currentText = game->player.wr[0]; 
+								break;
+
+							case SDLK_LEFT && SDLK_SPACE:
+								game->player.currentText = game->player.wl[0];
+								break;
+
+							case SDLK_UP:
+								game->player.currentText = game->player.wu[0];
+								break;
+							case SDLK_DOWN:
+								game->player.currentText = game->player.wd[0];
+								break;
+
+							case SDLK_SPACE:
+								deAttackAnimation(game, game->player.lastDirection);
+								game->spacePressed = false;
+								break;
+						}
 
 				}
 				break;
@@ -152,19 +160,20 @@ int processEvents(SDL_Window *window, GameState *game){
 
 	int playerSpeed = 7; //how fast player moves
 
-	if(state[SDL_SCANCODE_LEFT]){
+										//does not allow to mv and atk at the same time
+	if(state[SDL_SCANCODE_LEFT] && !state[SDL_SCANCODE_SPACE]){
 		animate(game, 'L');
 		game->player.x -= playerSpeed;
 		game->player.lastDirection = 'L';
 	}
 
-	else if(state[SDL_SCANCODE_RIGHT]){
+	else if(state[SDL_SCANCODE_RIGHT] && !state[SDL_SCANCODE_SPACE]){
 		animate(game, 'R');
 		game->player.x += playerSpeed;
 		game->player.lastDirection = 'R';
 	}
 
-	else if(state[SDL_SCANCODE_UP]){
+	else if(state[SDL_SCANCODE_UP] && !state[SDL_SCANCODE_SPACE]){
 		animate(game, 'U');
 		game->player.y -= playerSpeed;
 		game->player.lastDirection = 'U';
@@ -217,6 +226,8 @@ int terminateGame(GameState *game, SDL_Window *window){
 	SDL_DestroyTexture(game->player.wu[1]);
 	SDL_DestroyTexture(game->player.wl[1]);
 	SDL_DestroyTexture(game->player.wd[1]);
+
+	//destroy attack textures
 	
 	SDL_DestroyTexture(game->player.currentText);
 	SDL_DestroyTexture(game->mapTextures.tree);			//destroy map textures
