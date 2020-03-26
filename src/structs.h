@@ -14,6 +14,7 @@ typedef struct
 	int area;	   // player area	
 	int health;    // player health
 	bool isAttack; // true if spacebar is pressed
+	char lastDirection; 
 
 	//animation frames
 
@@ -123,5 +124,5 @@ void drawPlayer(GameState *game);
 void drawEnemies(GameState *game);
 void drawHUD(GameState *game);
 void drawGameOver(GameState *game);
-void attackAnimation(GameState *game, bool pressed);
-void deAttackAnimation(GameState *game);
+void attackAnimation(GameState *game, bool pressed, char direction);
+void deAttackAnimation(GameState *game, char direction);

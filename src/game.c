@@ -24,8 +24,8 @@ extern void drawEnemies(GameState *game);
 extern void drawHUD(GameState *game);
 extern void drawPlayer(GameState *game);
 extern void drawGameOver(GameState *game);
-extern void attackAnimation(GameState *game, bool pressed);
-extern void deAttackAnimation(GameState *game);
+extern void attackAnimation(GameState *game, bool pressed, char directrion);
+extern void deAttackAnimation(GameState *game, char directrion);
 
 
 //load function
@@ -60,6 +60,7 @@ void loadGame(GameState *game) {
 	game->skeleton[0].approach = 500;
 	game->skeleton[0].speed = 3;
 	game->spacePressed = false;
+	game->player.lastDirection = 'D';
 
 	// ## load textures and fonts ## 
 	loadPlayerTextures(game); 
@@ -112,7 +113,7 @@ int processEvents(SDL_Window *window, GameState *game){
 			case SDL_KEYDOWN:
 				switch(event.key.keysym.sym){
 					case SDLK_SPACE:
-						attackAnimation(game, game->spacePressed);
+						attackAnimation(game, game->spacePressed, game->player.lastDirection);
 						game->spacePressed = true;
 						break;
 						
@@ -136,7 +137,7 @@ int processEvents(SDL_Window *window, GameState *game){
 						break;
 
 					case SDLK_SPACE:
-						deAttackAnimation(game);
+						deAttackAnimation(game, game->player.lastDirection);
 						game->spacePressed = false;
 						break;
 
@@ -154,22 +155,26 @@ int processEvents(SDL_Window *window, GameState *game){
 	if(state[SDL_SCANCODE_LEFT]){
 		animate(game, 'L');
 		game->player.x -= playerSpeed;
+		game->player.lastDirection = 'L';
 	}
 
 	else if(state[SDL_SCANCODE_RIGHT]){
 		animate(game, 'R');
 		game->player.x += playerSpeed;
+		game->player.lastDirection = 'R';
 	}
 
 	else if(state[SDL_SCANCODE_UP]){
 		animate(game, 'U');
 		game->player.y -= playerSpeed;
+		game->player.lastDirection = 'U';
 		
 	}
 
-	else if(state[SDL_SCANCODE_DOWN]){
+	else if(state[SDL_SCANCODE_DOWN] && !state[SDL_SCANCODE_SPACE]){
 		animate(game, 'D');
 		game->player.y += playerSpeed;
+		game->player.lastDirection = 'D';
 	}
 	
 	game->time++;

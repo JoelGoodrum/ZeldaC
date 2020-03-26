@@ -293,30 +293,41 @@ void enemyMovement(GameState *game, Enemy *enemy, int arrSize){
 
 }
 
-void attackAnimation(GameState *game, bool pressed){
+void attackAnimation(GameState *game, bool pressed, char direction){
 
-	if(pressed == false){
-		//adjust player axis according to img size diff between stading still frame and attack frame 
-		game->player.x = game->player.x - 44;
-		game->player.y = game->player.y - 44;
+	if(direction == 'D'){
 
-		printf("x up\n");
+		if(pressed == false){
+			//adjust player axis according to img size diff between stading still frame and attack frame 
+			game->player.x = game->player.x - 44;
+			game->player.y = game->player.y - 44;
+		}
+		
+
+			game->player.area = 202;
+			game->player.currentText = game->player.ad;
+			game->player.isAttack = true;
+
 	}
+	
 
-	game->player.area = 202;
-	game->player.currentText = game->player.ad;
-	game->player.isAttack = true;
+	
+
+
 }
 
-void deAttackAnimation(GameState *game){
+void deAttackAnimation(GameState *game, char direction){
 	
-	
-	game->player.x = game->player.x + 44;
-	game->player.y = game->player.y + 44;
-	
+	if(direction == 'D'){
+		game->player.x = game->player.x + 44;
+		game->player.y = game->player.y + 44;
+		
 
-	game->player.area = 115;
-	game->player.isAttack = false;
-	game->player.currentText = game->player.wd[0];
+		game->player.area = 115;
+		game->player.isAttack = false;
+		game->player.currentText = game->player.wd[0];
+
+	}
+
 }
 
