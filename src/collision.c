@@ -295,8 +295,12 @@ void enemyMovement(GameState *game, Enemy *enemy, int arrSize){
 
 void attackAnimation(GameState *game, bool pressed){
 
-	if(pressed == true){
-		game->scrollX = game->scrollX + 500;
+	if(pressed == false){
+		//adjust player axis according to img size diff between stading still frame and attack frame 
+		game->player.x = game->player.x - 44;
+		game->player.y = game->player.y - 44;
+
+		printf("x up\n");
 	}
 
 	game->player.area = 202;
@@ -304,11 +308,12 @@ void attackAnimation(GameState *game, bool pressed){
 	game->player.isAttack = true;
 }
 
-void deAttackAnimation(GameState *game, bool pressed){
+void deAttackAnimation(GameState *game){
 	
-	if(pressed == true){
-		game->scrollX += 45;
-	}
+	
+	game->player.x = game->player.x + 44;
+	game->player.y = game->player.y + 44;
+	
 
 	game->player.area = 115;
 	game->player.isAttack = false;

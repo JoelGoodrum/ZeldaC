@@ -25,7 +25,7 @@ extern void drawHUD(GameState *game);
 extern void drawPlayer(GameState *game);
 extern void drawGameOver(GameState *game);
 extern void attackAnimation(GameState *game, bool pressed);
-extern void deAttackAnimation(GameState *game, bool pressed);
+extern void deAttackAnimation(GameState *game);
 
 
 //load function
@@ -59,6 +59,7 @@ void loadGame(GameState *game) {
 	game->skeleton[0].attack = 10;
 	game->skeleton[0].approach = 500;
 	game->skeleton[0].speed = 3;
+	game->spacePressed = false;
 
 	// ## load textures and fonts ## 
 	loadPlayerTextures(game); 
@@ -95,7 +96,6 @@ int processEvents(SDL_Window *window, GameState *game){
 
 	SDL_Event event;
 	int notDone = true;
-	bool spacePressed = false;
 	const Uint8 *state = SDL_GetKeyboardState(NULL);
 
 	while(SDL_PollEvent(&event)){
@@ -112,8 +112,8 @@ int processEvents(SDL_Window *window, GameState *game){
 			case SDL_KEYDOWN:
 				switch(event.key.keysym.sym){
 					case SDLK_SPACE:
-						attackAnimation(game, spacePressed);
-						spacePressed = true;
+						attackAnimation(game, game->spacePressed);
+						game->spacePressed = true;
 						break;
 						
 				}
@@ -136,8 +136,8 @@ int processEvents(SDL_Window *window, GameState *game){
 						break;
 
 					case SDLK_SPACE:
-						deAttackAnimation(game, spacePressed);
-						spacePressed = false;
+						deAttackAnimation(game);
+						game->spacePressed = false;
 						break;
 
 				}

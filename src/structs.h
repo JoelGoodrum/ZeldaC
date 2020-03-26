@@ -96,10 +96,11 @@ typedef struct
 	int time; 						// keep track of time to organize frames
 	int scrollX, scrollY;   		// mv camera
 	Player player;  
-	int numbOfSkel;        		// player obj
-	Enemy skeleton[1];					// enemy obj
+	int numbOfSkel;        			// player obj
+	Enemy skeleton[1];				// enemy obj
 	EnemyTextures enemyTextures; 	// enemy texture
 	TTF_Font *gameOverFont;
+	bool spacePressed;				// if space bar is pressed, set to ture
 
 
 	// ## MAP ## //
@@ -123,4 +124,4 @@ void drawEnemies(GameState *game);
 void drawHUD(GameState *game);
 void drawGameOver(GameState *game);
 void attackAnimation(GameState *game, bool pressed);
-void deAttackAnimation(GameState *game, bool pressed);
+void deAttackAnimation(GameState *game);
