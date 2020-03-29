@@ -9,12 +9,12 @@
 //custom lib
 #include "structs.h"
 
-extern void drawSpeechBubble(GameState *game, Character *character);
+extern void drawSpeechBubble(GameState *game, MapAsset *character);
 
 
 // collision detection out of bounds
 // returns true if there is an object in the way
-void collision(GameState *game, GameObj *obj, int arrSize) {
+void collision(GameState *game, MapAsset *obj, int arrSize) {
 
 	WindowSize *win = &game->windowSize;
 
@@ -23,153 +23,9 @@ void collision(GameState *game, GameObj *obj, int arrSize) {
 	float playerX = (float)player->x;
 	float playerA = (float)player->area;
 
-	//loop all objects to see if there is collision
-	for(int i = 0; i < arrSize; i++){
-
-		
-		float objY = (float)obj[i].y;
-		float objX = (float)obj[i].x;
-		float objA = (float)obj[i].area;
-		
-
-		//if obj and player are on the same y axis
-		if(playerY + playerA > objY && playerY < (objY + objA)){
-		
-			//rubbing againts right edge
-			if(playerX < (objX + objA) && (playerX + playerA) > (objX + objA)){
-				
-				//correct playerX
-				game->player.x = (int)(objX + objA);
-				playerX = objX + objA;
-			}
-			
-
-			//rubbing againts left edge
-			else if(playerX + playerA > objX && playerX < objX){
-				
-				//correct playerX
-				game->player.x = (int)(objX - playerA);
-				playerX = objX - objA;
-			}
-			
-		}
-		
-
-		
-		//if obj and player are on the same x axis
-		if ( (playerX + (playerA/2)) > objX && playerX + (playerA/2) < (objX + objA)) {
-
-			//if bumping head
-			if(playerY < (objY + objA) && player->y > objY){
-				
-				//correct y
-				game->player.y = (int)(objY + objA);
-				playerY = objY + objA;
-
-			}
-			
-			//if bumping feet
-			else if(playerY + playerA > objY && playerY < objY){
-
-				//correct y
-				game->player.y = (int)(objY - playerA);
-				playerY = objY - playerA;
-
-			}
-
-		}
-
-	}
-	
-}
-
-//character collision: will delete this method later
-void characterCollision(GameState *game, Character *obj, int arrSize) {
-
-	WindowSize *win = &game->windowSize;
-
-	Player *player= &game->player;
-	float playerY = (float)player->y;
-	float playerX = (float)player->x;
-	float playerA = (float)player->area;
-
-	//loop all objects to see if there is collision
-	for(int i = 0; i < arrSize; i++){
-
-		
-		float objY = (float)obj[i].y;
-		float objX = (float)obj[i].x;
-		float objA = (float)obj[i].area;
-		
-
-		//if obj and player are on the same y axis
-		if(playerY + playerA > objY && playerY < (objY + objA)){
-		
-			//rubbing againts right edge
-			if(playerX < (objX + objA) && (playerX + playerA) > (objX + objA)){
-				
-				drawSpeechBubble(game, &obj[i]);
-
-				//correct playerX
-				game->player.x = (int)(objX + objA);
-				playerX = objX + objA;
-			}
-			
-
-			//rubbing againts left edge
-			else if(playerX + playerA > objX && playerX < objX){
-				
-
-				//correct playerX
-				game->player.x = (int)(objX - playerA);
-				playerX = objX - objA;
-			}
-			
-		}
-		
-
-		
-		//if obj and player are on the same x axis
-		if ( (playerX + (playerA/2)) > objX && playerX + (playerA/2) < (objX + objA)) {
-
-			//if bumping head
-			if(playerY < (objY + objA) && player->y > objY){
-
-				
-
-				//correct y
-				game->player.y = (int)(objY + objA);
-				playerY = objY + objA;
-
-			}
-			
-			//if bumping feet
-			else if(playerY + playerA > objY && playerY < objY){
-				
-
-				//correct y
-				game->player.y = (int)(objY - playerA);
-				playerY = objY - playerA;
-
-			}
-
-		}
-
-	}
-	
-}
-
-void enemyCollision(GameState *game, Enemy *obj, int arrSize) {
-
-	WindowSize *win = &game->windowSize;
 	int pushEnemies = 200;
-
-	Player *player= &game->player;
-	float playerY = (float)player->y;
-	float playerX = (float)player->x;
-	float playerA = (float)player->area;
 	float enemyPush = 50;
-				
+
 	//loop all objects to see if there is collision
 	for(int i = 0; i < arrSize; i++){
 
@@ -178,20 +34,30 @@ void enemyCollision(GameState *game, Enemy *obj, int arrSize) {
 		float objX = (float)obj[i].x;
 		float objA = (float)obj[i].area;
 		
-		//only do enemy collision if enemy is alive
-		if(obj->health > 0){
 
-			//if obj and player are on the same y axis
-			if(playerY + playerA > objY && playerY < (objY + objA)){
-
+		//if obj and player are on the same y axis
+		if(playerY + playerA > objY && playerY < (objY + objA)){
+		
+			//rubbing againts right edge
+			if(playerX < (objX + objA) && (playerX + playerA) > (objX + objA)){
 				
-				//rubbing againts right edge
-				if(playerX < (objX + objA) && (playerX + playerA) > (objX + objA)){
-					
+				//if is character
+				if(obj->assetType == 1){
+					drawSpeechBubble(game, &obj[i]);
+
+					//correct playerX
+					game->player.x = (int)(objX + objA);
+					playerX = objX + objA;
+				}
+			
+
+				//if is enemy
+				else if(obj->assetType == 2 && obj->health > 0){
+
 					//if attackting, push enemy and remove health
 					if(game->player.isAttack){
 						obj->x = obj->x - pushEnemies;
-						obj->health = obj->health - game->player.attack;
+						obj->health = obj->health - obj->attack;
 
 						obj->isDamaged = true;
 						obj->damageTime = 1;
@@ -203,16 +69,35 @@ void enemyCollision(GameState *game, Enemy *obj, int arrSize) {
 						playerX = objX + objA + enemyPush;
 						game->player.health = game->player.health - obj[i].attack; 		//remove health from player
 					}
-				}
-				
-
-				//rubbing againts left edge
-				else if(playerX + playerA > objX && playerX < objX){
 					
+				}
+
+				else if(obj->assetType == 0) {
+					//correct playerX
+					game->player.x = (int)(objX + objA);
+					playerX = objX + objA;
+				}
+			}
+			
+
+			//rubbing againts left edge
+			else if(playerX + playerA > objX && playerX < objX){
+				
+				if(obj->assetType == 1){
+					drawSpeechBubble(game, &obj[i]);
+
+					//correct playerX
+					game->player.x = (int)(objX - playerA);
+					playerX = objX - objA;
+				}
+
+
+				else if(obj->assetType == 2 && obj->health > 0){
+
 					//if attackting, push enemy and remove health
 					if(game->player.isAttack){
 						obj->x = obj->x + pushEnemies;
-						obj->health = obj->health - game->player.attack;
+						obj->health = obj->health - obj->attack;
 						obj->isDamaged = true;
 						obj->damageTime = 1;
 					}
@@ -224,24 +109,41 @@ void enemyCollision(GameState *game, Enemy *obj, int arrSize) {
 						game->player.health = game->player.health - obj[i].attack;		//remove health from player
 				
 					}
-
 				}
 
-				
+				else if(obj->assetType == 0) {
+					//correct playerX
+					game->player.x = (int)(objX - playerA);
+					playerX = objX - objA;
+				}
 			}
 			
+		}
+		
 
-			
-			//if obj and player are on the same x axis
-			if ( (playerX + (playerA/2)) > objX && playerX + (playerA/2) < (objX + objA)) {
+		
+		//if obj and player are on the same x axis
+		if ( (playerX + (playerA/2)) > objX && playerX + (playerA/2) < (objX + objA)) {
 
-				//if bumping head
-				if(playerY < (objY + objA) && player->y > objY){
+			//if bumping head
+			if(playerY < (objY + objA) && player->y > objY){
+
+				if(obj->assetType == 1){
+					drawSpeechBubble(game, &obj[i]);
+
+					//correct y
+					game->player.y = (int)(objY + objA);
+					playerY = objY + objA;
+				}
+				
+
+
+				else if(obj->assetType == 2 && obj->health > 0){
 
 					//if attackting, push enemy and remove health
 					if(game->player.isAttack){
 						obj->y = obj->y - pushEnemies;
-						obj->health = obj->health - game->player.attack;
+						obj->health = obj->health - obj->attack;
 						obj->isDamaged = true;
 						obj->damageTime = 1;
 					}
@@ -252,18 +154,34 @@ void enemyCollision(GameState *game, Enemy *obj, int arrSize) {
 						playerY = objY + objA + enemyPush;
 						game->player.health = game->player.health - obj[i].attack;
 					}
-
-					
-
 				}
-				
-				//if bumping feet
-				else if(playerY + playerA > objY && playerY < objY){
 
+				else if(obj->assetType == 0){
+					//correct y
+					game->player.y = (int)(objY + objA);
+					playerY = objY + objA;
+				}
+
+			}
+			
+			//if bumping feet
+			else if(playerY + playerA > objY && playerY < objY){
+
+				if(obj->assetType == 1){
+					drawSpeechBubble(game, &obj[i]);
+
+					//correct y
+					game->player.y = (int)(objY - playerA);
+					playerY = objY - playerA;
+				}
+
+				
+
+				else if(obj->assetType == 2 && obj->health > 0){
 					//if attackting, push enemy and remove health
 					if(game->player.isAttack){
 						obj->y = obj->y + pushEnemies;
-						obj->health = obj->health - game->player.attack;
+						obj->health = obj->health - obj->attack;
 						obj->isDamaged = true;
 						obj->damageTime = 1;
 					}
@@ -274,37 +192,42 @@ void enemyCollision(GameState *game, Enemy *obj, int arrSize) {
 						playerY = objY - playerA - enemyPush;
 						game->player.health = game->player.health - obj[i].attack;
 					}
-					
-
 				}
-		
+
+				else if(obj->assetType == 0) {
+					//correct y
+					game->player.y = (int)(objY - playerA);
+					playerY = objY - playerA;
+				}
+
 			}
 
 		}
-			
-	}
 
+	}
+	
 }
+
 
 //code from  https://www.youtube.com/watch?v=yUiZcWHOfW4&list=PLT6WFYYZE6uLMcPGS3qfpYm7T_gViYMMt&index=12
 
 // animate
 void animate(GameState *game, char direction) {
 
-	Player *player = &game->player;
+	Textures *textures = &game->textures;
 	int frameFreq = 8;
 
 	if(direction == 'R'){
 
 		if(game->time % frameFreq == 0){
 		
-			if(player->currentText == player->wr[0]){
+			if(textures->playerCText == textures->wr[0]){
 				
-				player->currentText = player->wr[1];
+				textures->playerCText = textures->wr[1];
 			}
 
 			else {
-				player->currentText = player->wr[0];
+				textures->playerCText = textures->wr[0];
 			}
 		}
 		
@@ -314,13 +237,13 @@ void animate(GameState *game, char direction) {
 
 		if(game->time % frameFreq == 0){
 		
-			if(player->currentText == player->wl[0]){
+			if(textures->playerCText == textures->wl[0]){
 				
-				player->currentText = player->wl[1];
+				textures->playerCText = textures->wl[1];
 			}
 
 			else {
-				player->currentText = player->wl[0];
+				textures->playerCText = textures->wl[0];
 			}
 		}
 		
@@ -330,13 +253,13 @@ void animate(GameState *game, char direction) {
 
 		if(game->time % frameFreq == 0){
 		
-			if(player->currentText == player->wu[0]){
+			if(textures->playerCText == textures->wu[0]){
 				
-				player->currentText = player->wu[1];
+				textures->playerCText = textures->wu[1];
 			}
 
 			else {
-				player->currentText = player->wu[0];
+				textures->playerCText = textures->wu[0];
 			}
 		}
 		
@@ -346,13 +269,13 @@ void animate(GameState *game, char direction) {
 
 		if(game->time % frameFreq == 0){
 		
-			if(player->currentText == player->wd[0]){
+			if(textures->playerCText == textures->wd[0]){
 				
-				player->currentText = player->wd[1];
+				textures->playerCText = textures->wd[1];
 			}
 
 			else {
-				player->currentText = player->wd[0];
+				textures->playerCText = textures->wd[0];
 			}
 		}
 		
@@ -379,7 +302,7 @@ bool withInX(float playerX, float enemyX, float approach){
 }
 
 //enemy moves towards player after certain distance
-void enemyMovement(GameState *game, Enemy *enemy, int arrSize){
+void enemyMovement(GameState *game, MapAsset *enemy, int arrSize){
 	
 	Player *player= &game->player;
 
@@ -425,6 +348,9 @@ void enemyMovement(GameState *game, Enemy *enemy, int arrSize){
 
 void attackAnimation(GameState *game, bool pressed, char direction){
 
+	Textures *textures = &game->textures;
+
+
 	if(direction == 'D'){
 
 		if(pressed == false){
@@ -435,7 +361,7 @@ void attackAnimation(GameState *game, bool pressed, char direction){
 		
 
 			game->player.area = 202;
-			game->player.currentText = game->player.ad;
+			textures->playerCText = textures->ad;
 			game->player.isAttack = true;
 
 	}
@@ -450,7 +376,7 @@ void attackAnimation(GameState *game, bool pressed, char direction){
 		
 
 			game->player.area = 202;
-			game->player.currentText = game->player.au;
+			textures->playerCText = textures->au;
 			game->player.isAttack = true;
 
 	}
@@ -465,7 +391,7 @@ void attackAnimation(GameState *game, bool pressed, char direction){
 		
 
 			game->player.area = 202;
-			game->player.currentText = game->player.al;
+			textures->playerCText = textures->al;
 			game->player.isAttack = true;
 
 	}
@@ -481,7 +407,7 @@ void attackAnimation(GameState *game, bool pressed, char direction){
 		
 
 			game->player.area = 202;
-			game->player.currentText = game->player.ar;
+			textures->playerCText = textures->ar;
 			game->player.isAttack = true;
 
 	}
@@ -494,6 +420,8 @@ void attackAnimation(GameState *game, bool pressed, char direction){
 
 void deAttackAnimation(GameState *game, char direction){
 	
+	Textures *textures = &game->textures;
+
 	if(direction == 'D'){
 		game->player.x = game->player.x + 44;
 		game->player.y = game->player.y + 44;
@@ -501,7 +429,7 @@ void deAttackAnimation(GameState *game, char direction){
 
 		game->player.area = 115;
 		game->player.isAttack = false;
-		game->player.currentText = game->player.wd[0];
+		textures->playerCText = textures->wd[0];
 
 	}
 
@@ -512,7 +440,7 @@ void deAttackAnimation(GameState *game, char direction){
 
 		game->player.area = 115;
 		game->player.isAttack = false;
-		game->player.currentText = game->player.wu[0];
+		textures->playerCText = textures->wu[0];
 
 	}
 
@@ -523,7 +451,7 @@ void deAttackAnimation(GameState *game, char direction){
 
 		game->player.area = 115;
 		game->player.isAttack = false;
-		game->player.currentText = game->player.wl[0];
+		textures->playerCText = textures->wl[0];
 
 	}
 
@@ -534,34 +462,34 @@ void deAttackAnimation(GameState *game, char direction){
 
 		game->player.area = 115;
 		game->player.isAttack = false;
-		game->player.currentText = game->player.wr[0];
+		textures->playerCText = textures->wr[0];
 
 	}
 
 }
 
-void animateEnemies(GameState *game){
+void animateEnemies(GameState *game, MapAsset *enemy, int enemyNumb){
 
 	
-	int numbOfSkel = 1;
+
 	int frameFreq = 60;
 
 	//iterate all skeletons
-	for(int i = 0; i < numbOfSkel; i++){
-		if(game->skeleton[i].isDamaged){
+	for(int i = 0; i < enemyNumb; i++){
+		if(enemy[i].isDamaged){
 
 			//display damaged frame
-			game->skeleton[i].currentText = game->enemyTextures.damaged;
+			enemy[i].currentText = 1; // indicy of texture array
 
 			//progress damaged timer
 			if(game->time % frameFreq == 0){
-				game->skeleton[i].damageTime -= 1;
+				enemy[i].damageTime -= 1;
 			} 
 
 			// if damaged time hits 0, enemy isnt damaged anymore
-			if(game->skeleton[i].damageTime == 0){
-				game->skeleton[i].isDamaged = false;
-				game->skeleton[i].currentText = game->enemyTextures.skeleton;
+			if(enemy[i].damageTime == 0){
+				enemy[i].isDamaged = false;
+				enemy[i].currentText = 0;
 			}
 		}
 

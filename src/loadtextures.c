@@ -10,249 +10,64 @@
 
 extern void doRender(GameState *game);
 
-//make texture out of images
-void loadPlayerTextures(GameState *game ){
+void loadTexture(GameState *game, SDL_Texture** tmpTexture, char *path){
+
 
     //load image and create texture//
-    SDL_Surface *playerSurface;
+    SDL_Surface *tmpSurface;
 
-    //#######################################//
-    char *path = "../res/wr0.png";
-
-	playerSurface = IMG_Load(path);
-	if(playerSurface == NULL) {
+	tmpSurface = IMG_Load(path);
+	if(tmpSurface == NULL) {
 		printf("cannot find: %s\n", path);
 		SDL_Quit();
 		exit(1);
 	}
 	
-	game->player.wr[0] = SDL_CreateTextureFromSurface(game->rend, playerSurface);
-	SDL_FreeSurface(playerSurface);
+	*tmpTexture = SDL_CreateTextureFromSurface(game->rend, tmpSurface);
+	SDL_FreeSurface(tmpSurface);
+}
 
-	//#######################################//
-    path = "../res/wl0.png";
+//make texture out of images
+void loadPlayerTextures(GameState *game ){
 
-	playerSurface = IMG_Load(path);
-	if(playerSurface == NULL) {
-		printf("cannot find %s: \n", path);
-		SDL_Quit();
-		exit(1);
-	}
-	
-	game->player.wl[0] = SDL_CreateTextureFromSurface(game->rend, playerSurface);
-	SDL_FreeSurface(playerSurface);
+	Textures *textures = &game->textures;
 
-	//#######################################//
-    path = "../res/wd0.png";
+	loadTexture(game, &game->textures.wr[0], "../res/wr0.png");
+	loadTexture(game, &game->textures.wl[0], "../res/wl0.png");
+	loadTexture(game, &game->textures.wu[0], "../res/wu0.png");
+	loadTexture(game, &game->textures.wd[0], "../res/wd0.png");
 
-	playerSurface = IMG_Load(path);
-	if(playerSurface == NULL) {
-		printf("cannot find %s: \n", path);
-		SDL_Quit();
-		exit(1);
-	}
-	
-	game->player.wd[0] = SDL_CreateTextureFromSurface(game->rend, playerSurface);
-	SDL_FreeSurface(playerSurface);
+	loadTexture(game, &game->textures.wr[1], "../res/wr1.png");
+	loadTexture(game, &game->textures.wl[1], "../res/wl1.png");
+	loadTexture(game, &game->textures.wu[1], "../res/wu1.png");
+	loadTexture(game, &game->textures.wd[1], "../res/wd1.png");
 
-	//#######################################//
-    path = "../res/wu0.png";
-
-	playerSurface = IMG_Load(path);
-	if(playerSurface == NULL) {
-		printf("cannot find %s: \n", path);
-		SDL_Quit();
-		exit(1);
-	}
-	
-	game->player.wu[0] = SDL_CreateTextureFromSurface(game->rend, playerSurface);
-	SDL_FreeSurface(playerSurface);
-
-	//#####################################//
-	//#####################################//
-	//#####################################//
-
-	//#######################################//
-    path = "../res/wr1.png";
-
-	playerSurface = IMG_Load(path);
-	if(playerSurface == NULL) {
-		printf("cannot find %s: \n", path);
-		SDL_Quit();
-		exit(1);
-	}
-	
-	game->player.wr[1] = SDL_CreateTextureFromSurface(game->rend, playerSurface);
-	SDL_FreeSurface(playerSurface);
-
-	//#######################################//
-    path = "../res/wl1.png";
-
-	playerSurface = IMG_Load(path);
-	if(playerSurface == NULL) {
-		printf("cannot find %s: \n", path);
-		SDL_Quit();
-		exit(1);
-	}
-	
-	game->player.wl[1] = SDL_CreateTextureFromSurface(game->rend, playerSurface);
-	SDL_FreeSurface(playerSurface);
-
-	//#######################################//
-    path = "../res/wd1.png";
-
-	playerSurface = IMG_Load(path);
-	if(playerSurface == NULL) {
-		printf("cannot find %s: \n", path);
-		SDL_Quit();
-		exit(1);
-	}
-	
-	game->player.wd[1] = SDL_CreateTextureFromSurface(game->rend, playerSurface);
-	SDL_FreeSurface(playerSurface);
-
-	//#######################################//
-    path = "../res/wu1.png";
-
-	playerSurface = IMG_Load(path);
-	if(playerSurface == NULL) {
-		printf("cannot find %s: \n", path);
-		SDL_Quit();
-		exit(1);
-	}
-	
-	game->player.wu[1] = SDL_CreateTextureFromSurface(game->rend, playerSurface);
-	SDL_FreeSurface(playerSurface);
-
-	//#### font texture ##########//
-	game->hud.label = NULL;
-
-
-	// ## attack textures ## //
-	path = "../res/linkAttack/wdA.png";
-
-	playerSurface = IMG_Load(path);
-	if(playerSurface == NULL) {
-		printf("cannot find %s: \n", path);
-		SDL_Quit();
-		exit(1);
-	}
-	
-	game->player.ad = SDL_CreateTextureFromSurface(game->rend, playerSurface);
-	SDL_FreeSurface(playerSurface);
-
-	// ## ##################### //
-	path = "../res/linkAttack/wuA.png";
-
-	playerSurface = IMG_Load(path);
-	if(playerSurface == NULL) {
-		printf("cannot find %s: \n", path);
-		SDL_Quit();
-		exit(1);
-	}
-	
-	game->player.au = SDL_CreateTextureFromSurface(game->rend, playerSurface);
-	SDL_FreeSurface(playerSurface);
-
-		// ## ##################### //
-	path = "../res/linkAttack/wlA.png";
-
-	playerSurface = IMG_Load(path);
-	if(playerSurface == NULL) {
-		printf("cannot find %s: \n", path);
-		SDL_Quit();
-		exit(1);
-	}
-	
-	game->player.al = SDL_CreateTextureFromSurface(game->rend, playerSurface);
-	SDL_FreeSurface(playerSurface);
-
-		// ## ##################### //
-	path = "../res/linkAttack/wrA.png";
-
-	playerSurface = IMG_Load(path);
-	if(playerSurface == NULL) {
-		printf("cannot find %s: \n", path);
-		SDL_Quit();
-		exit(1);
-	}
-	
-	game->player.ar = SDL_CreateTextureFromSurface(game->rend, playerSurface);
-	SDL_FreeSurface(playerSurface);
+	loadTexture(game, &game->textures.ad, "../res/linkAttack/ad.png");
+	loadTexture(game, &game->textures.au, "../res/linkAttack/au.png");
+	loadTexture(game, &game->textures.al, "../res/linkAttack/al.png");
+	loadTexture(game, &game->textures.ar, "../res/linkAttack/ar.png");
 
 }
 
 //load enemy textures
 void loadSkeletonTextures(GameState *game){
 
-	//load skeleton texture
-    SDL_Surface *skelSurface;
+	loadTexture(game, &game->textures.skeleton[0], "../res/skeleton/wd0.png");
+	loadTexture(game, &game->textures.skeleton[1], "../res/skeleton/dd.png");
 
-    char *path = "../res/skeleton/wd0.png";
-
-	skelSurface = IMG_Load(path);
-	if(skelSurface == NULL) {
-		printf("cannot find %s: \n", path);
-		SDL_Quit();
-		exit(1);
-	}
-
-	game->enemyTextures.skeleton = SDL_CreateTextureFromSurface(game->rend, skelSurface);
-	SDL_FreeSurface(skelSurface);
-	// skeleton texture loaded
-
-	//load damaged skeleton texture
-	path = "../res/skeleton/dd.png";
-
-	skelSurface = IMG_Load(path);
-	if(skelSurface == NULL) {
-		printf("cannot find %s: \n", path);
-		SDL_Quit();
-		exit(1);
-	}
-
-	game->enemyTextures.damaged = SDL_CreateTextureFromSurface(game->rend, skelSurface);
-	SDL_FreeSurface(skelSurface);
-	//damaged skeleton texture loaded
 }
 
 //load map textures
 void loadMapTextures(GameState *game){
 
-	//load tree texture
-    SDL_Surface *treeSurface;
+	loadTexture(game, &game->textures.tree, "../res/tree.png");
 
-    char *path = "../res/tree.png";
 
-	treeSurface = IMG_Load(path);
-	if(treeSurface == NULL) {
-		printf("cannot find %s: \n", path);
-		SDL_Quit();
-		exit(1);
-	}
-
-	game->mapTextures.tree = SDL_CreateTextureFromSurface(game->rend, treeSurface);
-	SDL_FreeSurface(treeSurface);
-	// tree texture loaded
 }
 
 void loadCharacterTextures(GameState *game){
 
-	//load lost guy texture
-    SDL_Surface *characterSurface;
-
-    char *path = "../res/lostGuy.png";
-
-	characterSurface = IMG_Load(path);
-	if(characterSurface == NULL) {
-		printf("cannot find %s: \n", path);
-		SDL_Quit();
-		exit(1);
-	}
-
-	game->lostGuy.texture = SDL_CreateTextureFromSurface(game->rend, characterSurface);
-	SDL_FreeSurface(characterSurface);
-	// lost guy texture loaded
+	loadTexture(game, &game->textures.characters[0], "../res/lostGuy.png");
 
 }
 
@@ -276,17 +91,16 @@ void drawMap(GameState *game){
 
 	int scrollX = game->scrollX;
 	int scrollY = game->scrollY;
+	Assets *assets = &game->assets;
 	
 	//background color
 	SDL_SetRenderDrawColor(game->rend, 50, 140, 50, 255);
 
 	//draw trees
-	for(int i = 0; i < game->numbOfTrees; i++){
-		SDL_Rect treeRect = {scrollX + game->tree[i].x, scrollY + game->tree[i].y, game->tree[i].area, game->tree[i].area};
-		SDL_RenderCopy(game->rend, game->mapTextures.tree, NULL, &treeRect);
+	for(int i = 0; i < NUMB_OF_TREES; i++){
+		SDL_Rect treeRect = {scrollX + assets->tree[i].x, scrollY + assets->tree[i].y, assets->tree[i].area, assets->tree[i].area};
+		SDL_RenderCopy(game->rend, game->textures.tree, NULL, &treeRect);
 	}
-	
-	
 	
 }
 
@@ -298,39 +112,40 @@ void drawPlayer(GameState *game){
 
 	//draw player at current postion
 	SDL_Rect playerRect = {scrollX + game->player.x, scrollY + game->player.y, game->player.area, game->player.area};
-	SDL_RenderCopy(game->rend, game->player.currentText, NULL, &playerRect);
+	SDL_RenderCopy(game->rend, game->textures.playerCText, NULL, &playerRect);
 }
 
 void drawCharacters(GameState *game){
 
 	int scrollX = game->scrollX;
 	int scrollY = game->scrollY;
-	int numbOfCharacters = 1;
+	Textures *textures = &game->textures;
 
 	//draw all characters
-	for(int i = 0; i < numbOfCharacters; i++){
+	for(int i = 0; i < NUMB_OF_CHARACTERS; i++){
 
-		Character *character = &game->characters[i];
+		MapAsset *character = &game->assets.characters[i];
 		SDL_Rect charcaterRect = {scrollX + character[i].x, scrollY + character[i].y, character[i].area, character[i].area};
-		SDL_RenderCopy(game->rend, character[i].texture, NULL, &charcaterRect);
+		SDL_RenderCopy(game->rend, textures->characters[character[i].currentText], NULL, &charcaterRect);
 
 	}
 
 }
 
-void drawEnemies(GameState *game){
+void drawSkeletons(GameState *game){
 
 	int scrollX = game->scrollX;
 	int scrollY = game->scrollY;
+	MapAsset *skeleton = game->assets.skeleton;
 
 	//draw skeleton at current postion
-	for(int i = 0; i < game->numbOfSkel; i++){
+	for(int i = 0; i < NUMB_OF_SKELS; i++){
 
 		//draw skeleton if alive
-		if(game->skeleton[i].health > 0){
+		if(skeleton[i].health > 0){
 
-			SDL_Rect skelRect = {scrollX + game->skeleton[i].x, scrollY + game->skeleton[i].y, 100, 100};
-			SDL_RenderCopy(game->rend, game->skeleton[i].currentText, NULL, &skelRect);
+			SDL_Rect skelRect = {scrollX + skeleton[i].x, scrollY + skeleton[i].y, 100, 100};
+			SDL_RenderCopy(game->rend, game->textures.skeleton[skeleton[i].currentText], NULL, &skelRect);
 		}
 
 				
@@ -386,7 +201,7 @@ void drawGameOver(GameState *game){
 
 }
 
-void drawSpeechBubble(GameState *game, Character *character){
+void drawSpeechBubble(GameState *game, MapAsset *character){
 
 	//make bubble rectangle
 	int padding = 30;

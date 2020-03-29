@@ -11,11 +11,17 @@
 //custom lib
 #include "structs.h"
 
-extern void collision(GameState *game, GameObj *obj, int arrSize);
-extern void enemyCollision(GameState *game, Enemy *obj, int arrSize);
-extern void characterCollision(GameState *game, Character *obj, int arrSize);
+/*
+extern NUMB_OF_TREES;
+extern NUMB_OF_SKELS;
+extern NUMB_OF_CHARACTERS;
+*/
+
+
+extern void collision(GameState *game, MapAsset *obj, int arrSize);
+
 extern void animate(GameState *game, char directrion);
-extern void enemyMovement(GameState *game, Enemy *enemy, int arrSize);
+extern void enemyMovement(GameState *game, MapAsset *enemy, int arrSize);
 
 extern void loadMapTextures(GameState *game);
 extern void loadPlayerTextures(GameState *game);
@@ -24,14 +30,14 @@ extern void loadCharacterTextures(GameState *game);
 extern void loadFonts(GameState *game);
 
 extern void drawMap(GameState *game);
-extern void drawEnemies(GameState *game);
+extern void drawSkeletons(GameState *game);
 extern void drawHUD(GameState *game);
 extern void drawPlayer(GameState *game);
 extern void drawGameOver(GameState *game);
 
 extern void attackAnimation(GameState *game, bool pressed, char directrion);
 extern void deAttackAnimation(GameState *game, char directrion);
-extern void animateEnemies(GameState *game);
+extern void animateEnemies(GameState *game, MapAsset *enemy, int enemyNumb);
 extern void drawCharacters(GameState *game);
 
 
@@ -45,56 +51,63 @@ void loadGame(GameState *game) {
 	loadMapTextures(game);    
 	loadFonts(game);		
 
+	Player *player = &game->player;
+	Assets *assets = &game->assets;
+
 	//game variables
 	game->spacePressed = false;
-	game->player.currentText = game->player.wd[0]; //set first frame
-	game->scrollX = 0;							   //set scroll var
+	game->time = 0; 		  // start game time
+	game->running = true;     // signal that game is on
+	game->scrollX = 0;		  // center camera on player
+	game->scrollY = 0;		  // center camera on player
+	game->textures.playerCText = game->textures.wd[0]; 			//set first frame
+	game->hud.label = NULL;
 
 	//player variables
-	game->player.area = 115;  //set player area
-	game->time = 0; 		  //start game time
-	game->running = true;     //signal that game is on
-	game->player.x = (game->windowSize.x / 2) - (game->player.area / 2); //start in the middle of x axis
-	game->player.y = (game->windowSize.y / 2) - (game->player.area / 2); //start in the middle of y axis
-	game->player.health = 100;
-	game->player.attack = 30;
-	game->player.isAttack = false;
-	game->player.lastDirection = 'D';
+	player->area = 115;  								     //set player area
+	player->x = (game->windowSize.x / 2) - (player->area / 2); //start in the middle of x axis
+	player->y = (game->windowSize.y / 2) - (player->area / 2); //start in the middle of y axis
+	player->health = 100;
+	player->attack = 30;
+	player->isAttack = false;
+	player->lastDirection = 'D';
+
+
+	// ## map assets ## 
+
 
 	//character variables
-	//character[0] is lost guy
-	game->lostGuy.x = 210;
-	game->lostGuy.y = 350;
-	game->lostGuy.area = 100;
-	game->lostGuy.speech = "Hey?!?!  Can you please kill that skeleton up there?";
-	game->characters[0] = game->lostGuy;
-	// ## map variables ## 
+	assets->lostGuy.assetType = 1;  //is character flag
+	assets->lostGuy.x = 210;
+	assets->lostGuy.y = 350;
+	assets->lostGuy.area = 100;
+	assets->lostGuy.speech = "Hey?!?!  Can you please kill that skeleton up there?";
+	assets->characters[0] = assets->lostGuy;  	//character[0] is lost guy
 
 	//tree variables
-	game->numbOfTrees = 2;
-	game->tree[0].x = 150;  //tree x position
-	game->tree[0].y = 150;  //tree y position
-	game->tree[0].area = 250;     //tree area
+	assets->tree[0].x = 150;  //tree x position
+	assets->tree[0].y = 150;  //tree y position
+	assets->tree[0].area = 250;     //tree area
 
-	game->tree[1].x = 400;  //tree x position
-	game->tree[1].y = 150;  //tree y position
-	game->tree[1].area = 250;     //tree area
+	assets->tree[1].x = 400;  //tree x position
+	assets->tree[1].y = 150;  //tree y position
+	assets->tree[1].area = 250;     //tree area
 
 	//skeleton variables
-	game->numbOfSkel = 1;
-	game->skeleton[0].x = 150;
-	game->skeleton[0].y = -250;
-	game->skeleton[0].area = 100;
-	game->skeleton[0].attack = 10;
-	game->skeleton[0].approach = 500;
-	game->skeleton[0].speed = 3;
-	game->skeleton[0].health = 100;
-	game->skeleton[0].isDamaged = false;
-	game->skeleton[0].damageTime = 0;
-	game->skeleton[0].currentText = game->enemyTextures.skeleton;
-	
+	assets->skeleton[0].assetType = 2;		//is enemy flag
+	assets->skeleton[0].x = 150;
+	assets->skeleton[0].y = -250;
+	assets->skeleton[0].area = 100;
+	assets->skeleton[0].attack = 10;
+	assets->skeleton[0].approach = 500;
+	assets->skeleton[0].speed = 3;
+	assets->skeleton[0].health = 100;
+	assets->skeleton[0].isDamaged = false;
+	assets->skeleton[0].damageTime = 0;
+	assets->skeleton[0].currentText = 0; 	
 	
 }
+
 
 //render game condition on screen
 void doRender(GameState *game) {	
@@ -103,15 +116,17 @@ void doRender(GameState *game) {
 
 	//draw functions
 	drawMap(game);	
-	drawEnemies(game);
 	
 	drawPlayer(game);
+	drawSkeletons(game);
 	drawCharacters(game);
 	drawHUD(game);
+	
 
 	SDL_RenderPresent(game->rend); //when done drawing, present drawing
 
 }
+
 
 //process inputs and outputs to game
 int processEvents(SDL_Window *window, GameState *game){
@@ -147,25 +162,25 @@ int processEvents(SDL_Window *window, GameState *game){
 
 					case SDLK_RIGHT:
 						if(!game->player.isAttack){
-							game->player.currentText = game->player.wr[0]; 
+							game->textures.playerCText = game->textures.wr[0]; 
 						}
 						break;
 						
 
 					case SDLK_LEFT:
 						if(!game->player.isAttack){
-							game->player.currentText = game->player.wl[0];
+							game->textures.playerCText = game->textures.wl[0];
 						}
 						break;
 
 					case SDLK_UP:
 						if(!game->player.isAttack){
-							game->player.currentText = game->player.wu[0];
+							game->textures.playerCText = game->textures.wu[0];
 						}
 						break;
 					case SDLK_DOWN:
 						if(!game->player.isAttack){
-							game->player.currentText = game->player.wd[0];
+							game->textures.playerCText = game->textures.wu[0];
 						}
 						break;
 
@@ -174,11 +189,8 @@ int processEvents(SDL_Window *window, GameState *game){
 						game->spacePressed = false;
 						break;
 				
-
 				}
 				break;
-
-
 
 		}
 	}
@@ -221,6 +233,7 @@ int processEvents(SDL_Window *window, GameState *game){
 	return notDone;
 }
 
+
 //player is dead 
 void ifGameOver(GameState *game){
 	
@@ -232,9 +245,9 @@ void ifGameOver(GameState *game){
 		//start from begenning
 		loadGame(game);
 	}
-
 	
 }
+
 
 //close everything and quit
 int terminateGame(GameState *game, SDL_Window *window){
@@ -242,22 +255,23 @@ int terminateGame(GameState *game, SDL_Window *window){
 	printf("terminating game...\n");
 
 	//destroy player textures standing still
-	SDL_DestroyTexture(game->player.wr[0]);
-	SDL_DestroyTexture(game->player.wu[0]);
-	SDL_DestroyTexture(game->player.wl[0]);
-	SDL_DestroyTexture(game->player.wd[0]);
+	SDL_DestroyTexture(game->textures.wr[0]);
+	SDL_DestroyTexture(game->textures.wu[0]);
+	SDL_DestroyTexture(game->textures.wl[0]);
+	SDL_DestroyTexture(game->textures.wd[0]);
 
 	//destroy textures in movement
-	SDL_DestroyTexture(game->player.wr[1]);
-	SDL_DestroyTexture(game->player.wu[1]);
-	SDL_DestroyTexture(game->player.wl[1]);
-	SDL_DestroyTexture(game->player.wd[1]);
+	SDL_DestroyTexture(game->textures.wr[1]);
+	SDL_DestroyTexture(game->textures.wu[1]);
+	SDL_DestroyTexture(game->textures.wl[1]);
+	SDL_DestroyTexture(game->textures.wd[1]);
 
 	//destroy attack textures
 	
-	SDL_DestroyTexture(game->player.currentText);
-	SDL_DestroyTexture(game->mapTextures.tree);			//destroy map textures
-	SDL_DestroyTexture(game->enemyTextures.skeleton);
+	SDL_DestroyTexture(game->textures.playerCText);
+	SDL_DestroyTexture(game->textures.tree);			//destroy map textures
+	SDL_DestroyTexture(game->textures.skeleton[0]);
+	SDL_DestroyTexture(game->textures.skeleton[1]);
 	
 	//destroy font
 	if(game->hud.label != NULL){
@@ -271,6 +285,7 @@ int terminateGame(GameState *game, SDL_Window *window){
 	SDL_Quit();
 	return 0;
 }
+
 
 //boot game
 int main(int argc, const char *argv[]){
@@ -297,20 +312,25 @@ int main(int argc, const char *argv[]){
 
 	game.rend = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 		
-	loadGame(&game);											//loads textures and player variables
+	loadGame(&game);											// loads textures and player variables
 
 	printf("game is running\n");
 
 	while(game.running == true){
 
-		game.running = processEvents(window, &game);			//run input and continue or quit the game
-		enemyMovement(&game, game.skeleton, game.numbOfSkel);	//mv enemy towards player
-		collision(&game, game.tree, game.numbOfTrees); 			//process tree collision
-		characterCollision(&game, game.characters, 1);
-		enemyCollision(&game, game.skeleton, game.numbOfSkel);	//process enemy collision
-		animateEnemies(&game);
-		doRender(&game);										//render the game
-		ifGameOver(&game);										//check if player died
+		game.running = processEvents(window, &game);			// run input and continue or quit the game
+		
+		
+		enemyMovement(&game, game.assets.skeleton, NUMB_OF_SKELS);	// mv enemy towards player
+		
+		collision(&game, game.assets.tree, NUMB_OF_TREES); 			// process tree collision
+		collision(&game, game.assets.characters, NUMB_OF_CHARACTERS);
+		collision(&game, game.assets.skeleton, NUMB_OF_SKELS);		// process enemy collision
+		
+		animateEnemies(&game, game.assets.skeleton, NUMB_OF_SKELS);
+		
+		doRender(&game);										// render the game
+		ifGameOver(&game);										// check if player died
 
 	}
 

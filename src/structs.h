@@ -7,6 +7,11 @@
 #include <time.h>
 #include <SDL2/SDL_ttf.h>
 
+#define NUMB_OF_TREES 2
+#define NUMB_OF_SKELS 1
+#define NUMB_OF_CHARACTERS 1
+
+
 //player obj
 typedef struct 
 {
@@ -17,9 +22,13 @@ typedef struct
 	bool isAttack; // true if spacebar is pressed
 	char lastDirection; 
 
-	//animation frames
+} Player;
 
-	//walking right
+
+//map textures
+typedef struct 
+{
+	// ## player textures ## //
 	//w for walking, r,l,u,d for direction
 	SDL_Texture *wr[2]; // wr[0] will be standing still, wr[1] will be moving
 	SDL_Texture *wl[2];
@@ -30,33 +39,30 @@ typedef struct
 	SDL_Texture *ad;
 	SDL_Texture *au;
 	SDL_Texture *al;
-	SDL_Texture *ar;
-	
-	SDL_Texture *currentText; //current texture of character
+	SDL_Texture *ar;	
+	SDL_Texture *playerCText; //current texture of character
 
-} Player;
+	// Map Textures
+	SDL_Texture *tree;
 
+	//skeleton textures
+	SDL_Texture *skeleton[2];
+
+	//character textures
+	SDL_Texture *characters[1]; //characters[0] is lost guy
+
+} Textures;
+
+
+//map object
 typedef struct 
 {
 	int x , y;
 	int area;
-	char *speech;
-	SDL_Texture *texture;
-} Character;
+	int assetType; // 1: character, 2: enemy
 
-//enemy textures
-typedef struct 
-{
-	SDL_Texture *skeleton;
-	SDL_Texture *damaged;
-	
-} EnemyTextures;
-
-//enemies obj
-typedef struct 
-{
-	int x , y;
-	int area;
+	// enemy variables 
+	int currentText; //indecie to which texture to use
 	int health;
 	int attack; //attack is how much health they take from player	
 	int approach; //when player is at a certain distance, approach
@@ -64,25 +70,24 @@ typedef struct
 	bool isDamaged; //when set true, skeleton frame changes
 	int damageTime; //how long damaged animation is on
 
-	SDL_Texture *currentText; //skeleton current texture
+	// character variables
+	char *speech;
+	
 
-} Enemy;
-
-
-//map textures
-typedef struct 
-{
-	SDL_Texture *tree;
-} MapTextures;
-
+} MapAsset;
 
 //in game objects
 typedef struct 
 {
-	int x , y; //position
-	int area;
 
-} GameObj;
+	//characters
+	MapAsset lostGuy;
+	MapAsset characters[NUMB_OF_CHARACTERS];
+
+	MapAsset tree[NUMB_OF_TREES]; 		
+	MapAsset skeleton[NUMB_OF_SKELS];				
+	
+} Assets;
 
 
 //window obj
@@ -109,38 +114,26 @@ typedef struct
 {
 	// ## GAME ## //
 
-	WindowSize windowSize;  		// game window size
-	HUD hud;  						// head ups display data
+	WindowSize windowSize;  		// game window size					
 	SDL_Renderer *rend;     		// renderer
+	HUD hud;  	
+	Player player;  				// player obj
+	Textures textures; 				// map textures
 	bool running; 					// check if game is running
 	int time; 						// keep track of time to organize frames
 	int scrollX, scrollY;   		// mv camera
-	Player player;  				// player obj
-	
-	// skeleton
-	int numbOfSkel;        			
-	Enemy skeleton[1];				// enemy obj
-	EnemyTextures enemyTextures; 	// enemy texture
+
+
 	TTF_Font *gameOverFont;
 	bool spacePressed;				// if space bar is pressed, set to ture
-
-	//characters
-	Character lostGuy;
-	Character characters[1];
-
-	// ## MAP ## //
-
-	int numbOfTrees; 			// needs to be set to two in load game function
-	GameObj tree[2]; 			// tree objects, two are currently set
-	MapTextures mapTextures; 	//map textures
+	Assets assets;					// load all in game assets
 
 } GameState;
 
-void collision(GameState *game, GameObj *obj, int arrSize);
-void enemyCollision(GameState *game, Enemy *obj, int arrSize);
-void characterCollision(GameState *game, Character *obj, int arrSize);
+
+void collision(GameState *game, MapAsset *obj, int arrSize);
 void animate(GameState *game, char direction);
-void enemyMovement(GameState *game, Enemy *enemy, int arrSize);
+void enemyMovement(GameState *game, MapAsset *enemy, int arrSize);
 
 void loadPlayerTextures(GameState *game);
 void loadSkeletonTextures(GameState *game);
@@ -149,12 +142,13 @@ void loadFonts(GameState *game);
 
 void drawMap(GameState *game);
 void drawPlayer(GameState *game);
-void drawEnemies(GameState *game);
+void drawSkeletons(GameState *game);
+void drawCharacters(GameState *game);
 void drawHUD(GameState *game);
 void drawGameOver(GameState *game);
-void drawSpeechBubble(GameState *game, Character *character);
+void drawSpeechBubble(GameState *game, MapAsset *character);
 
 void attackAnimation(GameState *game, bool pressed, char direction);
 void deAttackAnimation(GameState *game, char direction);
-void animateEnemies(GameState *game);
-void drawCharacters(GameState *game);
+void animateEnemies(GameState *game, MapAsset *enemy, int enemyNumb);
+;
