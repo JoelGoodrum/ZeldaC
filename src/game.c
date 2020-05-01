@@ -8,11 +8,6 @@
 //custom lib
 #include "structs.h"
 
-/*
-extern NUMB_OF_TREES;
-extern NUMB_OF_SKELS;
-extern NUMB_OF_CHARACTERS;
-*/
 
 
 extern void collision(GameState *game, MapAsset *obj, int arrSize);
@@ -36,6 +31,8 @@ extern void attackAnimation(GameState *game, bool pressed, char directrion);
 extern void deAttackAnimation(GameState *game, char directrion);
 extern void animateEnemies(GameState *game, MapAsset *enemy, int enemyNumb);
 extern void drawCharacters(GameState *game);
+
+extern void loadTrees(GameState *game);
 
 
 //load function
@@ -81,27 +78,26 @@ void loadGame(GameState *game) {
 	assets->lostGuy.speech = "Hey?!?!  Can you please kill that skeleton up there?";
 	assets->characters[0] = assets->lostGuy;  	//character[0] is lost guy
 
-	//tree variables
-	assets->tree[0].x = 150;  //tree x position
-	assets->tree[0].y = 150;  //tree y position
-	assets->tree[0].area = 250;     //tree area
-
-	assets->tree[1].x = 400;  //tree x position
-	assets->tree[1].y = 150;  //tree y position
-	assets->tree[1].area = 250;     //tree area
+	loadTrees(game);
 
 	//skeleton variables
-	assets->skeleton[0].assetType = 2;		//is enemy flag
-	assets->skeleton[0].x = 150;
-	assets->skeleton[0].y = -250;
-	assets->skeleton[0].area = 100;
-	assets->skeleton[0].attack = 10;
-	assets->skeleton[0].approach = 500;
-	assets->skeleton[0].speed = 3;
-	assets->skeleton[0].health = 20;
-	assets->skeleton[0].isDamaged = false;
-	assets->skeleton[0].damageTime = 0;
-	assets->skeleton[0].currentText = 0; 	
+
+	for(int i = 0; i < 3; i++){
+
+		assets->skeleton[i].assetType = 2;		//is enemy flag
+		assets->skeleton[i].x = 150 + (i * 150 * 3);
+		assets->skeleton[i].y = -250;
+		assets->skeleton[i].area = 100;
+		assets->skeleton[i].attack = 10;
+		assets->skeleton[i].approach = 500;
+		assets->skeleton[i].speed = 3;
+		assets->skeleton[i].health = 20;
+		assets->skeleton[i].isDamaged = false;
+		assets->skeleton[i].damageTime = 0;
+		assets->skeleton[i].currentText = 0; 	
+
+	}
+
 	
 }
 

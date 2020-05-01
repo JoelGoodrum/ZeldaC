@@ -5,8 +5,8 @@
 #include <time.h>
 #include <SDL2/SDL_ttf.h>
 
-#define NUMB_OF_TREES 2
-#define NUMB_OF_SKELS 1
+#define NUMB_OF_TREES 43
+#define NUMB_OF_SKELS 3
 #define NUMB_OF_CHARACTERS 1
 
 
@@ -149,4 +149,5 @@ void drawSpeechBubble(GameState *game, MapAsset *character);
 void attackAnimation(GameState *game, bool pressed, char direction);
 void deAttackAnimation(GameState *game, char direction);
 void animateEnemies(GameState *game, MapAsset *enemy, int enemyNumb);
-;
+
+void loadTrees(GameState *game);

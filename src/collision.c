@@ -36,32 +36,36 @@ void collision(GameState *game, MapAsset *obj, int arrSize) {
 		
 
 		
+		
+		
 		//if obj and player are on the same y axis
-		if(playerY + playerA > objY && playerY <= objY || playerY >= objY && objY + objA > playerY){
+		if((playerY + playerA >= objY && playerY <= objY) || (playerY >= objY && objY + objA >= playerY)){
+
 		
 			//rubbing againts right edge
-			if(playerX < (objX + objA) && playerX >= objX){
+			if(playerX < (objX + objA) && playerX > objX){
 				
 				//if is character
-				if(obj->assetType == 1){
+				if(obj[i].assetType == 1){
 					drawSpeechBubble(game, &obj[i]);
 
 					//correct playerX
 					game->player.x = (int)(objX + objA);
 					playerX = objX + objA;
+
 				}
 			
 
 				//if is enemy
-				else if(obj->assetType == 2 && obj->health > 0){
+				else if(obj[i].assetType == 2 && obj[i].health > 0){
 
 					//if attackting and facing enemy, push enemy and remove health
 					if(game->player.isAttack && game->player.lastDirection == 'L'){
-						obj->x = obj->x - pushEnemies;
-						obj->health = obj->health - obj->attack;
+						obj[i].x = obj[i].x - pushEnemies;
+						obj[i].health = obj[i].health - obj[i].attack;
 
-						obj->isDamaged = true;
-						obj->damageTime = 1;
+						obj[i].isDamaged = true;
+						obj[i].damageTime = 1;
 					} 
 
 					else {
@@ -75,7 +79,7 @@ void collision(GameState *game, MapAsset *obj, int arrSize) {
 
 
 				//random obj
-				else if(obj->assetType == 0) {
+				else if(obj[i].assetType == 0) {
 					//correct playerX
 					game->player.x = (int)(objX + objA);
 					playerX = objX + objA;
@@ -84,10 +88,10 @@ void collision(GameState *game, MapAsset *obj, int arrSize) {
 			
 
 			//rubbing againts left edge
-			if(playerX + playerA > objX && playerX <= objX){
+			if(playerX + playerA > objX && playerX < objX){
 				
 				//if character
-				if(obj->assetType == 1){
+				if(obj[i].assetType == 1){
 					drawSpeechBubble(game, &obj[i]);
 
 					//correct playerX
@@ -97,14 +101,14 @@ void collision(GameState *game, MapAsset *obj, int arrSize) {
 
 
 				//if enemy
-				else if(obj->assetType == 2 && obj->health > 0){
+				else if(obj[i].assetType == 2 && obj[i].health > 0){
 
 					//if attackting, push enemy and remove health
 					if(game->player.isAttack && game->player.lastDirection == 'R'){
-						obj->x = obj->x + pushEnemies;
-						obj->health = obj->health - obj->attack;
-						obj->isDamaged = true;
-						obj->damageTime = 1;
+						obj[i].x = obj[i].x + pushEnemies;
+						obj[i].health = obj[i].health - obj[i].attack;
+						obj[i].isDamaged = true;
+						obj[i].damageTime = 1;
 					}
 
 					else{
@@ -117,29 +121,29 @@ void collision(GameState *game, MapAsset *obj, int arrSize) {
 				}
 
 				//if random obj
-				else if(obj->assetType == 0) {
+				else if(obj[i].assetType == 0) {
 					//correct playerX
 					game->player.x = (int)(objX - playerA);
 					playerX = objX - objA;
 				}
 			}
+
 			
 		}
 		
 		
-
+		
 		
 		
 
 		//if obj and player are on the same x axis
-		if ( playerX + playerA > objX && playerX <= objX || playerX >= objX && (objX + objA) > playerX   )  {
+		if( (playerX <= objX && playerX + playerA >= objX)  || (playerX >= objX && (objX + objA) >= playerX)   )  {
 
 			//if bumping head
-			if(playerY >= objY && objY + objA > player->y){
-
+			if(playerY > objY && (objY + objA) > playerY){
 
 				//if character
-				if(obj->assetType == 1){
+				if(obj[i].assetType == 1){
 					drawSpeechBubble(game, &obj[i]);
 
 					//correct y
@@ -150,14 +154,14 @@ void collision(GameState *game, MapAsset *obj, int arrSize) {
 
 
 				//if enemy
-				else if(obj->assetType == 2 && obj->health > 0){
+				else if(obj[i].assetType == 2 && obj[i].health > 0){
 
 					//if attackting, push enemy and remove health
 					if(game->player.isAttack && game->player.lastDirection == 'U'){
-						obj->y = obj->y - pushEnemies;
-						obj->health = obj->health - obj->attack;
-						obj->isDamaged = true;
-						obj->damageTime = 1;
+						obj[i].y = obj[i].y - pushEnemies;
+						obj[i].health = obj[i].health - obj[i].attack;
+						obj[i].isDamaged = true;
+						obj[i].damageTime = 1;
 					}
 
 					else {
@@ -169,7 +173,7 @@ void collision(GameState *game, MapAsset *obj, int arrSize) {
 				}
 				
 				//random obj
-				else if(obj->assetType == 0){
+				else if(obj[i].assetType == 0){
 					//correct y
 					game->player.y = (int)(objY + objA);
 					playerY = objY + objA;
@@ -179,10 +183,10 @@ void collision(GameState *game, MapAsset *obj, int arrSize) {
 			
 			
 			//if bumping feet
-			if(playerY <= objY && playerY + playerA > objY){
+			if(playerY < objY && playerY + playerA > objY){
 
 			
-				if(obj->assetType == 1){
+				if(obj[i].assetType == 1){
 					drawSpeechBubble(game, &obj[i]);
 
 					//correct y
@@ -192,13 +196,13 @@ void collision(GameState *game, MapAsset *obj, int arrSize) {
 
 				
 
-				else if(obj->assetType == 2 && obj->health > 0){
+				else if(obj[i].assetType == 2 && obj[i].health > 0){
 					//if attackting, push enemy and remove health
 					if(game->player.isAttack && game->player.lastDirection == 'D'){
-						obj->y = obj->y + pushEnemies;
-						obj->health = obj->health - obj->attack;
-						obj->isDamaged = true;
-						obj->damageTime = 1;
+						obj[i].y = obj[i].y + pushEnemies;
+						obj[i].health = obj[i].health - obj[i].attack;
+						obj[i].isDamaged = true;
+						obj[i].damageTime = 1;
 					}
 
 					else {
@@ -209,7 +213,7 @@ void collision(GameState *game, MapAsset *obj, int arrSize) {
 					}
 				}
 
-				else if(obj->assetType == 0) {
+				else if(obj[i].assetType == 0) {
 					//correct y
 					game->player.y = (int)(objY - playerA);
 					playerY = objY - playerA;
@@ -223,6 +227,7 @@ void collision(GameState *game, MapAsset *obj, int arrSize) {
 
 		}
 		
+
 
 		
 		

@@ -124,7 +124,7 @@ void drawCharacters(GameState *game){
 
 		MapAsset *character = &game->assets.characters[i];
 		SDL_Rect charcaterRect = {scrollX + character[i].x, scrollY + character[i].y, character[i].area, character[i].area};
-		SDL_RenderCopy(game->rend, textures->characters[character[i].currentText], NULL, &charcaterRect);
+		SDL_RenderCopy(game->rend, textures->characters[i], NULL, &charcaterRect);
 
 	}
 
