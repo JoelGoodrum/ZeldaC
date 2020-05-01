@@ -1,6 +1,3 @@
-//code from https://www.youtube.com/watch?v=NTKjjqIzvd4&list=PLT6WFYYZE6uLMcPGS3qfpYm7T_gViYMMt&index=10
-
-
 #include <stdio.h>
 #include <stdbool.h>
 #include <SDL2/SDL.h>
@@ -101,7 +98,7 @@ void loadGame(GameState *game) {
 	assets->skeleton[0].attack = 10;
 	assets->skeleton[0].approach = 500;
 	assets->skeleton[0].speed = 3;
-	assets->skeleton[0].health = 100;
+	assets->skeleton[0].health = 20;
 	assets->skeleton[0].isDamaged = false;
 	assets->skeleton[0].damageTime = 0;
 	assets->skeleton[0].currentText = 0; 	
@@ -180,7 +177,7 @@ int processEvents(SDL_Window *window, GameState *game){
 						break;
 					case SDLK_DOWN:
 						if(!game->player.isAttack){
-							game->textures.playerCText = game->textures.wu[0];
+							game->textures.playerCText = game->textures.wd[0];
 						}
 						break;
 
@@ -286,7 +283,7 @@ int terminateGame(GameState *game, SDL_Window *window){
 	return 0;
 }
 
-
+//code from https://www.youtube.com/watch?v=NTKjjqIzvd4&list=PLT6WFYYZE6uLMcPGS3qfpYm7T_gViYMMt&index=10
 //boot game
 int main(int argc, const char *argv[]){
 

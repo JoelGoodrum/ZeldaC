@@ -1,5 +1,3 @@
-//code from https://www.youtube.com/watch?v=NTKjjqIzvd4&list=PLT6WFYYZE6uLMcPGS3qfpYm7T_gViYMMt&index=10
-
 #include <stdio.h>
 #include <stdbool.h>
 #include <SDL2/SDL.h>

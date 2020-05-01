@@ -82,8 +82,6 @@ void loadFonts(GameState *game){
 	}
 }
 
-//code from https://www.youtube.com/watch?v=JbtiCeKl1uo&list=PLT6WFYYZE6uLMcPGS3qfpYm7T_gViYMMt&index=14
-
 
 
 //draw map
@@ -182,7 +180,6 @@ void drawGameOver(GameState *game){
 	//clear screen
 	SDL_RenderClear(game->rend);
 	
-
 
 	//draw is dead
 	SDL_Color white = { 240, 240, 240, 255};

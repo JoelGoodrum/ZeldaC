@@ -35,11 +35,12 @@ void collision(GameState *game, MapAsset *obj, int arrSize) {
 		float objA = (float)obj[i].area;
 		
 
+		
 		//if obj and player are on the same y axis
-		if(playerY + playerA > objY && playerY < (objY + objA)){
+		if(playerY + playerA > objY && playerY <= objY || playerY >= objY && objY + objA > playerY){
 		
 			//rubbing againts right edge
-			if(playerX < (objX + objA) && (playerX + playerA) > (objX + objA)){
+			if(playerX < (objX + objA) && playerX >= objX){
 				
 				//if is character
 				if(obj->assetType == 1){
@@ -54,8 +55,8 @@ void collision(GameState *game, MapAsset *obj, int arrSize) {
 				//if is enemy
 				else if(obj->assetType == 2 && obj->health > 0){
 
-					//if attackting, push enemy and remove health
-					if(game->player.isAttack){
+					//if attackting and facing enemy, push enemy and remove health
+					if(game->player.isAttack && game->player.lastDirection == 'L'){
 						obj->x = obj->x - pushEnemies;
 						obj->health = obj->health - obj->attack;
 
@@ -72,6 +73,8 @@ void collision(GameState *game, MapAsset *obj, int arrSize) {
 					
 				}
 
+
+				//random obj
 				else if(obj->assetType == 0) {
 					//correct playerX
 					game->player.x = (int)(objX + objA);
@@ -81,8 +84,9 @@ void collision(GameState *game, MapAsset *obj, int arrSize) {
 			
 
 			//rubbing againts left edge
-			else if(playerX + playerA > objX && playerX < objX){
+			if(playerX + playerA > objX && playerX <= objX){
 				
+				//if character
 				if(obj->assetType == 1){
 					drawSpeechBubble(game, &obj[i]);
 
@@ -92,10 +96,11 @@ void collision(GameState *game, MapAsset *obj, int arrSize) {
 				}
 
 
+				//if enemy
 				else if(obj->assetType == 2 && obj->health > 0){
 
 					//if attackting, push enemy and remove health
-					if(game->player.isAttack){
+					if(game->player.isAttack && game->player.lastDirection == 'R'){
 						obj->x = obj->x + pushEnemies;
 						obj->health = obj->health - obj->attack;
 						obj->isDamaged = true;
@@ -111,6 +116,7 @@ void collision(GameState *game, MapAsset *obj, int arrSize) {
 					}
 				}
 
+				//if random obj
 				else if(obj->assetType == 0) {
 					//correct playerX
 					game->player.x = (int)(objX - playerA);
@@ -120,14 +126,19 @@ void collision(GameState *game, MapAsset *obj, int arrSize) {
 			
 		}
 		
+		
 
 		
+		
+
 		//if obj and player are on the same x axis
-		if ( (playerX + (playerA/2)) > objX && playerX + (playerA/2) < (objX + objA)) {
+		if ( playerX + playerA > objX && playerX <= objX || playerX >= objX && (objX + objA) > playerX   )  {
 
 			//if bumping head
-			if(playerY < (objY + objA) && player->y > objY){
+			if(playerY >= objY && objY + objA > player->y){
 
+
+				//if character
 				if(obj->assetType == 1){
 					drawSpeechBubble(game, &obj[i]);
 
@@ -138,10 +149,11 @@ void collision(GameState *game, MapAsset *obj, int arrSize) {
 				
 
 
+				//if enemy
 				else if(obj->assetType == 2 && obj->health > 0){
 
 					//if attackting, push enemy and remove health
-					if(game->player.isAttack){
+					if(game->player.isAttack && game->player.lastDirection == 'U'){
 						obj->y = obj->y - pushEnemies;
 						obj->health = obj->health - obj->attack;
 						obj->isDamaged = true;
@@ -155,7 +167,8 @@ void collision(GameState *game, MapAsset *obj, int arrSize) {
 						game->player.health = game->player.health - obj[i].attack;
 					}
 				}
-
+				
+				//random obj
 				else if(obj->assetType == 0){
 					//correct y
 					game->player.y = (int)(objY + objA);
@@ -164,9 +177,11 @@ void collision(GameState *game, MapAsset *obj, int arrSize) {
 
 			}
 			
+			
 			//if bumping feet
-			else if(playerY + playerA > objY && playerY < objY){
+			if(playerY <= objY && playerY + playerA > objY){
 
+			
 				if(obj->assetType == 1){
 					drawSpeechBubble(game, &obj[i]);
 
@@ -179,7 +194,7 @@ void collision(GameState *game, MapAsset *obj, int arrSize) {
 
 				else if(obj->assetType == 2 && obj->health > 0){
 					//if attackting, push enemy and remove health
-					if(game->player.isAttack){
+					if(game->player.isAttack && game->player.lastDirection == 'D'){
 						obj->y = obj->y + pushEnemies;
 						obj->health = obj->health - obj->attack;
 						obj->isDamaged = true;
@@ -202,7 +217,15 @@ void collision(GameState *game, MapAsset *obj, int arrSize) {
 
 			}
 
+			
+
+
+
 		}
+		
+
+		
+		
 
 	}
 	
@@ -285,20 +308,27 @@ void animate(GameState *game, char direction) {
 
 //see if player is in range of enemy in the y axis
 bool withInY(float playerY, float enemyY, float approach){
-	 	//withing y axis when player is above					//withing y axis when player is below
-	if( (playerY <= enemyY && enemyY - approach <= playerY) || (playerY >= enemyY && enemyY + approach >= playerY) ){
-			return true;
-	}
+
+	//withing y axis when player is above					
+	if(playerY <= enemyY && enemyY - approach <= playerY) { return true; }
+
+	//withing y axis when player is below
+	if(playerY >= enemyY && enemyY + approach >= playerY) { return true; }
+
 	return false;
 }
 
 //see if player is in range of enemy in the x axis
 bool withInX(float playerX, float enemyX, float approach){
-	 	//withing x axis when player is to the right					//withing x axis when player is left of enemy
-	if( (enemyX <= playerX && enemyX + approach >= playerX) || (playerX <= enemyX && enemyX - approach <= playerX) ){
-			return true;
-	}
+
+	//withing x axis when player is to the right					
+	if(playerX >= enemyX && enemyX + approach >= playerX) { return true; }
+
+	//withing x axis when player is left of enemy
+	if(playerX <= enemyX && enemyX - approach <= playerX) { return true; }
+
 	return false;
+
 }
 
 //enemy moves towards player after certain distance
