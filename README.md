@@ -1,5 +1,5 @@
 # ZeldaC
-Trees and character sprites are owned by Nintendo 
+Trees and character sprites are owned by Nintendo. 
 Skeleton sprite is owned by sam https://esambly.com/2019/02/24/sprites/
 
 
