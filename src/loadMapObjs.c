@@ -29,7 +29,7 @@ void loadTrees(GameState *game){
 		assets->tree[i].y = -1200 + ((i - 1) * 200);  //tree y position
 		assets->tree[i].area = 200;     //tree area
 		assets->tree[i].assetType = 0;
-		printf("i %d\n", i );
+	
 	}
 
 	//10 trees
@@ -40,7 +40,7 @@ void loadTrees(GameState *game){
 		assets->tree[i].y = -1000 + ((i - 11) * 200);  //tree y position
 		assets->tree[i].area = 200;     //tree area
 		assets->tree[i].assetType = 0;
-		printf("i %d\n", i );
+
 		
 	}
 
@@ -54,7 +54,6 @@ void loadTrees(GameState *game){
 		assets->tree[i].y = -800;  //tree y position
 		assets->tree[i].area = 200;     //tree area
 		assets->tree[i].assetType = 0;
-		printf("i %d\n", i );
 		
 	}
 
@@ -67,7 +66,7 @@ void loadTrees(GameState *game){
 		assets->tree[i].y = 900;  //tree y position
 		assets->tree[i].area = 200;     //tree area
 		assets->tree[i].assetType = 0;
-		printf("i %d\n", i );
+	
 		
 	}
 	
